@@ -1,7 +1,7 @@
 /* Station models (toon miniature). Each builder returns a group in local units around the station anchor.
    Detailed: Komtar, Clan Jetties, Fort Cornwallis. Simplified for now: Khoo Kongsi, Chowrasta. */
 import * as THREE from 'three';
-import { M, G, GEO, mat, canvasTex, type Sat } from './core';
+import { M, G, GEO, mat, canvasTex, patch, gradient, type Sat } from './core';
 import { ZONE } from '../content';
 
 export const SAT: Record<string, Sat> = {};
@@ -69,28 +69,62 @@ function fort() {
   return g;
 }
 function kho() {
-  const g = G(), o = { sat: satFor('kho') };
-  g.add(M('box', '#d8d3c6', 210, 2, 176, 0, 1, 10, o), M('box', '#cbc2b1', 140, 10, 108, 0, 5, -10, o), M('box', '#ecdfc7', 118, 28, 74, 0, 24, -14, o));
-  for (let i = 0; i < 6; i++) g.add(M('cyl', '#a8312b', 3, 28, 3, -50 + i * 20, 24, 25, o));
-  g.add(M('box', '#b8312b', 120, 4, 3, 0, 37, 25, o));
-  g.add(M('prism', '#5d6a66', 134, 20, 92, 0, 38, -14, o), M('box', '#ecdfc7', 96, 10, 58, 0, 47, -14, o), M('prism', '#5d6a66', 108, 22, 70, 0, 57, -14, o));
-  g.add(M('box', '#2f8f6f', 104, 4, 5, 0, 79, -14, o), M('box', '#e2a93f', 100, 2, 5.4, 0, 82, -14, o), M('box', '#c0392b', 80, 2.5, 3, 0, 38.5, 32, o));
-  for (const sx of [-1, 1]) { const d = M('cone', '#e2a93f', 3.6, 14, 3.6, sx * 54, 86, -14, o); d.rotation.z = sx * -.5; g.add(d); const d2 = M('cone', '#2f8f6f', 3, 10, 3, sx * 68, 60, -14, o); d2.rotation.z = sx * -.7; g.add(d2); }
-  for (const [x, z] of [[-66, 32], [66, 32], [-66, -60], [66, -60]]) { const c = M('cone', '#5d6a66', 3.4, 12, 3.4, x, 42, z, o); c.rotation.z = x < 0 ? .75 : -.75; g.add(c); }
-  for (let i = 0; i < 4; i++) g.add(M('box', '#d9d3c4', 60 - i * 4, 10 - i * 2.4, 9, 0, 5 - i * 1.2, 48 + i * 9, o));
-  g.add(M('cyl8', '#3f6b55', 6, 12, 6, -45, 8, 62, o), M('cyl8', '#3f6b55', 6, 12, 6, 45, 8, 62, o));
-  for (let i = 0; i < 4; i++) g.add(M('sph', '#e04535', 3, 3.6, 3, -30 + i * 20, 33, 29, { sat: o.sat, noShadow: 1 }));
+  const g = G(), o = { sat: satFor('kho') }; const roof = '#4f5d5a', wall = '#efe2c9', red = '#a8312b', gold = '#d9a23c';
+  g.add(M('box', '#d6d0c2', 220, 2, 190, 0, 1, 10, o));
+  g.add(M('box', '#c9bfae', 150, 12, 96, 0, 6, -14, o), M('box', '#b3a894', 152, 2, 98, 0, 12, -14, o));
+  for (let i = 0; i < 5; i++) { const h = 12 - i * 2.4; g.add(M('box', '#d9d3c4', 54, h, 8, 0, h / 2, 38 + i * 8, o)); }
+  g.add(M('box', '#c9bfae', 4, 7, 42, -29, 6, 52, o), M('box', '#c9bfae', 4, 7, 42, 29, 6, 52, o));
+  // main hall + porch
+  g.add(M('box', wall, 112, 30, 70, 0, 27, -18, o));
+  for (let i = 0; i < 6; i++) g.add(M('cyl', red, 3.2, 30, 3.2, -50 + i * 20, 27, 22, o));
+  for (const x of [-30, 0, 30]) g.add(M('box', '#8e2a24', 14, 18, 1, x, 21, 17.4, o));
+  g.add(M('box', gold, 116, 5, 4, 0, 40, 22, o), M('box', red, 120, 3, 8, 0, 43.5, 20, o));
+  // side wings
+  for (const sx of [-1, 1]) { g.add(M('box', wall, 34, 20, 60, sx * 76, 22, -14, o), M('prism', roof, 40, 10, 66, sx * 76, 32, -14, o), M('box', red, 30, 2, 2, sx * 76, 28, 16.5, o)); }
+  // two-tier roof
+  g.add(M('prism', roof, 136, 18, 98, 0, 42, -18, o), M('box', wall, 84, 8, 50, 0, 52, -18, o), M('prism', roof, 98, 20, 62, 0, 56, -18, o));
+  for (const [x, z] of [[-66, 30], [66, 30], [-66, -66], [66, -66]]) { const c = M('cone', roof, 3.4, 12, 3.4, x, 46, z, o); c.rotation.z = x < 0 ? .75 : -.75; g.add(c); }
+  // swallowtail ridge with ceramic ornaments
+  const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-60, 16, 0), new THREE.Vector3(-50, 5, 0), new THREE.Vector3(-25, 0, 0), new THREE.Vector3(25, 0, 0), new THREE.Vector3(50, 5, 0), new THREE.Vector3(60, 16, 0)]);
+  g.add(M(new THREE.TubeGeometry(curve, 40, 2.6, 6, false), '#2f8f6f', 1, 1, 1, 0, 76, -18, o));
+  g.add(M(new THREE.TubeGeometry(curve, 40, 1.3, 6, false), gold, .98, 1, 1, 0, 79.2, -18, o));
+  ['#e2a93f', '#c0392b', '#2f6fb0', '#2f8f6f', '#f3c22e', '#c0392b', '#2f6fb0'].forEach((c, i) => g.add(M('sph', c, 2.4, 3.2, 2.4, -36 + i * 12, 81.5, -18, o)));
+  const lowCurve = new THREE.CatmullRomCurve3([new THREE.Vector3(-70, 9, 0), new THREE.Vector3(-58, 1, 0), new THREE.Vector3(58, 1, 0), new THREE.Vector3(70, 9, 0)]);
+  g.add(M(new THREE.TubeGeometry(lowCurve, 30, 1.8, 6, false), '#2f8f6f', 1, 1, 1, 0, 60, 31, o));
+  // lanterns, urns
+  for (let i = 0; i < 5; i++) { const x = -40 + i * 20; g.add(M('sph', '#e04535', 3.4, 4, 3.4, x, 36, 25, o), M('cyl8', gold, .8, 4, .8, x, 31, 25, o)); }
+  g.add(M('cyl8', '#3f6b55', 6, 12, 6, -45, 8, 66, o), M('cyl8', '#3f6b55', 6, 12, 6, 45, 8, 66, o), M('cyl8', '#2f5544', 6.6, 1.6, 6.6, -45, 14.5, 66, o), M('cyl8', '#2f5544', 6.6, 1.6, 6.6, 45, 14.5, 66, o));
   return g;
 }
 function chowrasta() {
-  const g = G(), o = { sat: satFor('chowrasta') };
-  g.add(M('box', '#e9dfc6', 200, 2, 170, 0, 1, 10, o));
-  g.add(M('box', '#efe3c8', 160, 30, 84, 0, 15, -20, o), M('prism', '#b8452f', 166, 30, 90, 0, 30, -20, o), M('box', '#f4ead4', 164, 14, 5, 0, 34, 23, o), M('box', '#f4ead4', 40, 22, 5, 0, 38, 23.5, o));
-  for (let i = 0; i < 4; i++) g.add(M('box', '#8f3a28', 10, 8, 12, -54 + i * 36, 52, -20, o));
-  for (let i = 0; i < 3; i++) g.add(M('box', '#5a4b3b', 20, 18, 2, -50 + i * 50, 10, 25.5, o));
-  ['#f3c22e', '#2f6fb0', '#e04535', '#2f8f6f', '#f08a2c', '#e04535'].forEach((c, i) => { const x = -75 + i * 30, z = 55 + (i % 2) * 18; g.add(M('box', '#b0895c', 14, 10, 10, x, 5, z, o), M('cyl8', '#8d8d8d', .8, 18, .8, x, 14, z, o), M('cone', c, 13, 7, 13, x, 25, z, o)); });
-  palm(g, -92, -10, 26, o); palm(g, 95, -30, 28, o);
+  const g = G(), o = { sat: satFor('chowrasta') }; const cream = '#f1e4c6', trim = '#f8efd9', dark = '#5a4b3b';
+  g.add(M('box', '#e7ddc4', 210, 2, 180, 0, 1, 10, o));
+  g.add(M('box', cream, 168, 34, 86, 0, 17, -20, o), M('box', '#e8d7b0', 172, 3, 90, 0, 34, -20, o));
+  // arcade: pillars, arch openings with round tops
+  for (let i = 0; i < 8; i++) g.add(M('box', trim, 6, 22, 6, -84 + i * 24, 11, 23.5, o));
+  const half = new THREE.CylinderGeometry(9, 9, 1.6, 16, 1, false, -Math.PI / 2, Math.PI); half.rotateX(Math.PI / 2);
+  for (let i = 0; i < 7; i++) { const x = -72 + i * 24; g.add(M('box', dark, 18, 14, 1.5, x, 7, 23.6, o), M(half, dark, 1, 1, 1, x, 14, 23.6, o)); }
+  for (let i = 0; i < 7; i++) { const x = -72 + i * 24; g.add(M('box', '#7fa6b8', 11, 8, 1, x, 27, 23.4, o), M('box', '#5f8f6f', 3, 8, 1.2, x - 7, 27, 23.4, o), M('box', '#5f8f6f', 3, 8, 1.2, x + 7, 27, 23.4, o)); }
+  // front gable + parapet
+  const gable = M('prism', trim, 6, 16, 52, 0, 35.5, 21.5, o); gable.rotation.y = Math.PI / 2; g.add(gable);
+  g.add(M('box', trim, 172, 5, 4, 0, 37, 23, o), M('box', '#12384a', 34, 5, 1, 0, 31, 23.8, o));
+  // hip roof with skylight
+  g.add(M('prism', '#b8452f', 172, 22, 94, 0, 35.5, -20, o), M('box', '#9fc6d4', 120, 2.5, 10, 0, 57, -20, o));
+  for (let i = 0; i < 4; i++) g.add(M('box', '#8f3a28', 8, 6, 10, -54 + i * 36, 50, -20, o));
+  // stalls, umbrellas, carts
+  ['#f3c22e', '#2f6fb0', '#e04535', '#2f8f6f', '#f08a2c', '#e04535'].forEach((c, i) => {
+    const x = -75 + i * 30, z = 55 + (i % 2) * 18;
+    g.add(M('box', '#b0895c', 14, 9, 10, x, 4.5, z, o), M('cyl8', '#8d8d8d', .8, 18, .8, x, 14, z, o), M('cone', c, 13, 7, 13, x, 25, z, o));
+  });
+  for (const x of [-40, 40]) { g.add(M('box', '#3e7d5e', 16, 10, 9, x, 9, 86, o), M('cyl8', '#2b2433', 3, 2, 3, x - 5, 3, 91, o), M('cyl8', '#2b2433', 3, 2, 3, x + 5, 3, 91, o), M('box', '#f3c46a', 18, 1.5, 11, x, 15, 86, o)); }
+  for (const [x, z] of [[-92, 70], [92, 64]]) { g.add(M('cyl8', '#7a5a3a', 2.6, 20, 2.6, x, 10, z, o)); const c = M('ico', '#6fa45a', 16, 13, 16, x, 28, z, o); g.add(c); g.add(M('ico', '#82b866', 11, 9, 11, x + 6, 34, z - 4, o)); }
+  palm(g, -100, -20, 28, o); palm(g, 102, -36, 30, o);
   return g;
+}
+/* one vertex-coloured toon material per station so its saturation can follow the stamp tier */
+const VC: Record<string, THREE.Material> = {};
+export function stationMat(id: string) {
+  return VC[id] || (VC[id] = patch(new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: gradient }), satFor(id).u));
 }
 export const BUILDERS: Record<string, () => THREE.Group> = { komtar, jetty, fort, kho, chowrasta };
 /* offset of the model centre from the ground anchor; 'trigger' places the jetty from its shore point out to sea */

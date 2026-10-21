@@ -15,7 +15,7 @@ const FADE = [0, .45, .75, 1];
 const medals = (id: string) => { const t = tierOf(id); return `<div class="medals" aria-label="${L().tiers[t]}">${['b', 's', 'g'].map((c, i) => `<span class="medal ${c} ${t > i ? 'on' : ''}">${t > i ? L().tiers[i + 1][0] : ''}</span>`).join('')}</div>`; };
 
 export function openStation(id: string) {
-  player.path = []; const st = STATIONS[id], t = L(); const tier = tierOf(id); setRerender(() => openStation(id));
+  player.path = []; hooks.tutorial('station'); const st = STATIONS[id], t = L(); const tier = tierOf(id); setRerender(() => openStation(id));
   const gamesHtml = st.games.map((g, i) => { const d = save.games[id][i];
     return `<button type="button" class="game ${d ? 'done' : ''}" data-g="${i}"><span class="ic">${icon(g.type, d ? '#12384a' : undefined)}</span><span class="tx"><b>${esc(g.title[save.lang])}</b><span>${t.game} ${i + 1} · ${d ? t.done1 : t.play}</span></span>${d ? `<span class="tick">${ICON_TICK}</span>` : ''}</button>`; }).join('');
   const lock = tier < 3;
@@ -32,7 +32,7 @@ export function complete(id: string, gi: number) {
   const after = tierOf(id);
   if (after > before) hooks.startReveal({ id, r: RADII[before] || 20, r0: RADII[before] || 20, target: RADII[after], fromF: FADE[before], toF: FADE[after] });
   const unlocked = OUTFITS.find(o => o.need > beforeDone && o.need <= doneCount());
-  sfx(140, .25, 'triangle'); setTimeout(() => sfx(990, .12), 120);
+  sfx(140, .25, 'triangle'); setTimeout(() => sfx(990, .12), 120); hooks.tutorial('game');
   showStamp(id, after, after > before, unlocked);
 }
 function stampSvg(id: string, tier: number) {

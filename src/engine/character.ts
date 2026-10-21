@@ -1,6 +1,7 @@
 /* Low-poly chibi built from primitives, animated in code. Outfits and hair are part/colour swaps. */
 import * as THREE from 'three';
-import { GEO, gradient } from './core';
+import { GEO, gradient, addOutline } from './core';
+import { bakeChildren, disposeTree } from './bake';
 import { SKINS } from '../content';
 
 export const OUTFIT_STYLE: Record<string, any> = {
@@ -12,6 +13,7 @@ export const OUTFIT_STYLE: Record<string, any> = {
   kurung: { top: '#3e7d5e', pants: '#3e7d5e', acc: '#f3c46a', pat: 'kurung', long: 1 },
   explorer: { top: '#c9a56a', pants: '#6b5a3e', acc: '#2f7f77', pat: 'vest', hat: 'safari' },
 };
+const CHAR_MAT = new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: gradient });
 const CMATS: Record<string, THREE.Material> = {};
 const cm = (c: string) => CMATS[c] || (CMATS[c] = new THREE.MeshToonMaterial({ color: c, gradientMap: gradient }));
 function C(geo: string, color: string, sx: number, sy: number, sz: number, x: number, y: number, z: number) {
@@ -55,6 +57,8 @@ export function makeChar(look: Look, outfit: string, me: boolean) {
   const fz = hair === 2 ? 11.3 : 9.4;
   head.add(C('sph', '#2b2433', 1.5, 2, 1, -3.5, 0, fz), C('sph', '#2b2433', 1.5, 2, 1, 3.5, 0, fz), C('sph', '#ffffff', .6, .6, .5, -3, .8, fz + .8), C('sph', '#ffffff', .6, .6, .5, 4, .8, fz + .8),
     C('sph', '#e48f8f', 2, 1.2, .6, -6.2, -3.6, fz - 1.6), C('sph', '#e48f8f', 2, 1.2, .6, 6.2, -3.6, fz - 1.6), C('box', '#7a3b3b', 3, .9, .6, 0, -4.4, fz + .2));
+  // merge each rigid part (body, head, each limb) into one mesh, then outline it: ~6 draw calls per character
+  for (const part of [body, head, ...legs, ...arms]) { const m = bakeChildren(part, CHAR_MAT); if (m) addOutline(m, .55, '#2b2433'); }
   root.userData = { body, legs, arms, head };
   return root;
 }
@@ -80,7 +84,7 @@ export function charPreview(canvas: HTMLCanvasElement, look: Look, outfit: strin
     }
     const ch = makeChar(look, outfit, true);
     ch.rotation.y = ({ down: .35, right: Math.PI / 2, up: Math.PI, left: -Math.PI / 2 } as any)[dir || 'down'];
-    poseChar(ch, 0, false, 0); prevScene.add(ch); prevR.render(prevScene, prevCam); prevScene.remove(ch);
+    poseChar(ch, 0, false, 0); prevScene.add(ch); ch.traverse((o: any) => { if (o.userData.outline) o.visible = true; }); prevR.render(prevScene, prevCam); prevScene.remove(ch); disposeTree(ch);
     const c = canvas.getContext('2d')!; c.clearRect(0, 0, canvas.width, canvas.height); c.drawImage(prevR.domElement, 0, 0, canvas.width, canvas.height);
   } catch { /* WebGL unavailable: leave the preview blank */ }
 }

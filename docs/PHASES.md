@@ -6,7 +6,7 @@ Automated checks run on every phase: content + logic tests (incl. the geography 
 
 ---
 
-## Phase 0: Foundation ← current
+## Phase 0: Foundation ✅ signed off
 Move the approved 3D prototype into this repo as a maintainable game with identical behaviour.
 
 **Scope:** Vite + TypeScript + Three.js, modules (engine / game / UI), stations and Kisah as JSON content, zone assets, tests, CI, preview.
@@ -21,14 +21,23 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 
 **Exit:** owner sign-off.
 
-## Phase 1: Look, feel and phone performance
+## Phase 1: Look, feel and phone performance ← current
 - Toon outlines, warmer lighting, sky and soft clouds; better Khoo Kongsi and Chowrasta models
 - Merge static geometry and tune shadows so mid-range phones hold a steady frame rate
 - First-time tutorial (tap to walk, find a station, earn a stamp)
 - Settings: sound, music, graphics quality, language; ambient sound and simple music
 - Accessibility pass (focus order, screen-reader labels, reduced motion)
 
-**QA:** real iPhone + Android test, frame rate check, tutorial understandable by a child.
+**QA checklist**
+- [ ] Looks warmer and more "game": sky, soft clouds, dark outlines on buildings, trees, cats and the character
+- [ ] New Khoo Kongsi (red pillars, swallowtail roof, lanterns) and Pasar Chowrasta (arcaded market, umbrellas, carts) read well up close
+- [ ] Fresh start: the 4-step tutorial appears (walk → follow the arrow → play a game → first stamp); a child can follow it; *Langkau* skips it
+- [ ] Settings (gear, top right): BM ⇄ EN, sound, music, graphics Auto/Low/Medium/High, reduce motion, replay tutorial
+- [ ] Ambient sea + birds and the music loop play after the first tap; switching them off works; sound stops when the tab is hidden
+- [ ] Real iPhone and Android: steady and smooth while walking and zooming (note phone model; try Low if it stutters)
+- [ ] Keyboard only (desktop): Tab reaches every button, Esc closes sheets, focus returns to where you were
+
+**Exit:** owner sign-off.
 
 ## Phase 2: George Town complete
 - Bigger George Town map (re-bake a larger area from the approved coastline)

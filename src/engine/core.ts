@@ -11,12 +11,12 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 export const scene = new THREE.Scene();
-scene.background = new THREE.Color('#a8dad8');
-scene.fog = new THREE.Fog('#bfe4e0', 1900, 4200);
+scene.background = new THREE.Color('#cfe8e2');
+scene.fog = new THREE.Fog('#d7ebe3', 2000, 4600);
 export const camera = new THREE.PerspectiveCamera(32, 1, 5, 6000);
 const PI = Math.PI; // r155+ uses physical light units; scale to match the approved prototype look
-scene.add(new THREE.HemisphereLight('#fff3dc', '#5f8a8a', .55 * PI));
-export const sun = new THREE.DirectionalLight('#ffe9c8', .95 * PI);
+export const hemi = new THREE.HemisphereLight('#fff0d6', '#5c837d', .52 * PI); scene.add(hemi);
+export const sun = new THREE.DirectionalLight('#ffd9a8', 1.0 * PI);
 sun.castShadow = true;
 sun.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
 Object.assign(sun.shadow.camera, { left: -520, right: 520, top: 520, bottom: -520, near: 10, far: 1600 });
@@ -105,4 +105,56 @@ export function questArrowDeg(x: number, y: number) {
 export function resize() {
   view.w = cv.clientWidth; view.h = cv.clientHeight; renderer.setSize(view.w, view.h, false);
   camera.aspect = view.w / Math.max(1, view.h); camera.updateProjectionMatrix();
+}
+
+/* ---------- sky dome (follows the camera) ---------- */
+export const sky = new THREE.Mesh(new THREE.SphereGeometry(5200, 32, 16), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { top: { value: new THREE.Color('#79c3dc') }, mid: { value: new THREE.Color('#bde5e6') }, hor: { value: new THREE.Color('#fde6c4') } },
+  vertexShader: 'varying vec3 vW;void main(){vec4 w=modelMatrix*vec4(position,1.0);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader: 'uniform vec3 top,mid,hor;varying vec3 vW;void main(){float h=normalize(vW-cameraPosition).y;vec3 c=mix(hor,mid,smoothstep(-.05,.18,h));c=mix(c,top,smoothstep(.18,.65,h));gl_FragColor=vec4(c,1.0);\n#include <colorspace_fragment>\n}',
+}));
+sky.renderOrder = -1; sky.frustumCulled = false; scene.add(sky);
+
+/* ---------- toon outlines (inverted hull, world-space thickness, works with instancing) ---------- */
+export const outlines: THREE.Object3D[] = [];
+const OUTLINE_MATS: Record<string, THREE.ShaderMaterial> = {};
+export function outlineMat(color = '#3b2f2a', thick = 1.1) {
+  const key = color + thick;
+  return OUTLINE_MATS[key] || (OUTLINE_MATS[key] = new THREE.ShaderMaterial({
+    side: THREE.BackSide, uniforms: { uColor: { value: new THREE.Color(color) }, uThick: { value: thick } },
+    vertexShader: 'uniform float uThick;void main(){vec4 p=vec4(position,1.0);vec3 n=normal;\n#ifdef USE_INSTANCING\np=instanceMatrix*p;n=mat3(instanceMatrix)*n;\n#endif\nvec4 wp=modelMatrix*p;vec3 wn=normalize(mat3(modelMatrix)*n);wp.xyz+=wn*uThick;gl_Position=projectionMatrix*viewMatrix*wp;}',
+    fragmentShader: 'uniform vec3 uColor;void main(){gl_FragColor=vec4(uColor,1.0);\n#include <colorspace_fragment>\n}',
+  }));
+}
+/** Adds an outline twin to a mesh (child) or instanced mesh (sibling sharing the instance buffer). */
+export function addOutline(m: THREE.Mesh, thick = 1.1, color?: string) {
+  let o: THREE.Mesh;
+  if ((m as any).isInstancedMesh) {
+    const im = m as THREE.InstancedMesh; const oi = new THREE.InstancedMesh(im.geometry, outlineMat(color, thick), im.count);
+    oi.instanceMatrix = im.instanceMatrix; oi.count = im.count; oi.frustumCulled = im.frustumCulled; m.parent!.add(oi); o = oi;
+  } else { o = new THREE.Mesh(m.geometry, outlineMat(color, thick)); m.add(o); }
+  o.castShadow = false; o.receiveShadow = false; o.userData.outline = true; o.raycast = () => {}; o.visible = quality.outlines; outlines.push(o); return o;
+}
+
+/* ---------- graphics quality ---------- */
+export type QualityName = 'low' | 'medium' | 'high';
+export const quality = { name: (MOBILE ? 'medium' : 'high') as QualityName, outlines: true };
+export function applyQuality(q: QualityName) {
+  const dpr = window.devicePixelRatio || 1; quality.name = q; quality.outlines = q !== 'low';
+  renderer.setPixelRatio(q === 'low' ? 1 : q === 'medium' ? Math.min(dpr, 1.35) : Math.min(dpr, 2));
+  const shadows = q !== 'low'; const size = q === 'high' ? 2048 : 1024;
+  if (renderer.shadowMap.enabled !== shadows || sun.shadow.mapSize.x !== size) {
+    renderer.shadowMap.enabled = shadows; sun.shadow.mapSize.set(size, size);
+    if (sun.shadow.map) { sun.shadow.map.dispose(); (sun.shadow as any).map = null; }
+    scene.traverse((o: any) => { if (o.material) [].concat(o.material).forEach((m: any) => m.needsUpdate = true); });
+  }
+  for (const o of outlines) o.visible = quality.outlines;
+  resize();
+}
+/** keep the shadow box tight around what the camera sees */
+export function fitShadow() {
+  const half = Math.max(320, Math.min(950, camS.dist * .55)); const c = sun.shadow.camera;
+  if (Math.abs(c.right - half) > 20) { c.left = c.bottom = -half; c.right = c.top = half; c.updateProjectionMatrix(); }
+  sky.position.copy(camera.position);
 }

@@ -31,6 +31,7 @@ export function showPrompt() {
   const p = $('prompt'), h = $('hint'); const t = L();
   if (!nearId || flags.modalOpen) { p.hidden = true; h.hidden = flags.modalOpen || doneCount() > 0 || !flags.running; h.textContent = t.walk; return; }
   h.hidden = true; p.hidden = false;
+  $('prompt-go').dataset.kind = nearKind || '';
   if (nearKind === 'place') { $('prompt-k').textContent = t.near + ' · ' + t.tiers[tierOf(nearId)].toUpperCase() + ' · ' + tierOf(nearId) + '/3'; $('prompt-name').textContent = nm(nearId); $('prompt-go').textContent = t.open; }
   else if (nearKind === 'npc') { const n = npcs.find(n => n.id === nearId); $('prompt-k').textContent = t.near; $('prompt-name').textContent = n.say[save.lang].split(' ').slice(0, 3).join(' ') + '…'; $('prompt-go').textContent = t.talk; }
   else { $('prompt-k').textContent = t.soon; $('prompt-name').textContent = nearKind === 'bus' ? t.bus : t.ferry; $('prompt-go').textContent = t.view; }
@@ -45,7 +46,7 @@ let rerender: () => void = () => {};
 export const setRerender = (f: () => void) => { rerender = f; };
 export function refreshText() {
   const t = L(); document.documentElement.lang = save.lang === 'bm' ? 'ms' : 'en';
-  $('lang-bm').setAttribute('aria-pressed', String(save.lang === 'bm')); $('lang-en').setAttribute('aria-pressed', String(save.lang === 'en'));
+  $('game').setAttribute('aria-label', t.canvas); $('btn-set').setAttribute('aria-label', t.settings);
   $('t-zone').textContent = ZONE.label[save.lang]; $('t-pass').textContent = t.pass; $('stamp-count').textContent = doneCount() + '/' + TOTAL;
   $('cat-count').textContent = save.cats.length + '/' + ZONE.cats.length; $('btn-cats').setAttribute('aria-label', t.cats);
   const q = nextTarget(); $('quest-text').innerHTML = q ? (q.gold ? t.nextGold(nm(q.id)) : t.next(nm(q.id))) : t.done;
@@ -55,6 +56,5 @@ let toastT = 0;
 export function toast(m: string) { const el = $('toast'); el.textContent = m; el.hidden = false; clearTimeout(toastT); toastT = window.setTimeout(() => el.hidden = true, 3200); }
 export function initHud() {
   $('prompt-go').addEventListener('click', act);
-  $('lang-bm').onclick = () => { save.lang = 'bm'; persist(); refreshText(); rerender(); };
-  $('lang-en').onclick = () => { save.lang = 'en'; persist(); refreshText(); rerender(); };
+  hooks.refreshText = () => { refreshText(); rerender(); };
 }

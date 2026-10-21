@@ -162,3 +162,25 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 @media (max-width:420px){.hud-top{gap:6px}.zone{padding:6px 10px}.zone b{font-size:15px}.pill .lbl{display:none}.pill{padding:0 9px;gap:5px;height:42px}.lang button{min-width:34px;height:36px}}
 @media (max-width:350px){.zone{display:none}}
 @media (prefers-reduced-motion:reduce){.sheet,.stamp,.find .pulse,.opt.wrong{animation:none}}
+/* ---- Phase 1: settings, tutorial coach, switches ---- */
+.pill.icon{width:44px;padding:0;justify-content:center}
+.coach{position:absolute;left:50%;transform:translateX(-50%);top:calc(122px + env(safe-area-inset-top,0px));width:min(440px,calc(100% - 24px));box-sizing:border-box;display:flex;align-items:center;gap:12px;
+  padding:12px 12px 12px 16px;border-radius:18px;background:rgba(18,56,74,.96);color:#fff;box-shadow:0 14px 30px rgba(8,30,40,.35);animation:rise .3s ease-out}
+.coach-t{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.coach-t b{font-size:16px;line-height:1.35}
+.coach .small{color:#cfe0e4}
+.btn.ghost.light{color:#fff;border-color:rgba(255,255,255,.45);min-height:44px;padding:0 14px}
+.quest.pulse{animation:qpulse 1.2s ease-in-out infinite}
+@keyframes qpulse{50%{box-shadow:0 0 0 6px rgba(184,69,95,.45),0 8px 20px rgba(8,30,40,.25)}}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:16px;background:var(--paper)}
+.set.col{flex-direction:column;align-items:stretch}
+.set-l{font-weight:900;font-size:15px}
+.switch{width:58px;height:34px;flex:none;border-radius:17px;border:0;background:#cdbf9f;position:relative;padding:0}
+.switch span{position:absolute;left:4px;top:4px;width:26px;height:26px;border-radius:13px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:left .15s}
+.switch[aria-checked="true"]{background:var(--navy)}
+.switch[aria-checked="true"] span{left:28px;background:var(--gold)}
+.seg{display:flex;padding:3px;border-radius:14px;background:#e9dfc6;gap:3px}
+.seg button{min-height:40px;min-width:48px;border:0;border-radius:11px;background:transparent;font-weight:900;font-size:13px;color:var(--navy);padding:0 10px}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+.seg.wide button{flex:1}
+@media (prefers-reduced-motion:reduce){.coach,.quest.pulse{animation:none}}

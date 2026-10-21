@@ -1,0 +1,100 @@
+{
+  "license": "ODbL-1.0",
+  "attribution": "© OpenStreetMap contributors",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "copyright_url": "https://www.openstreetmap.org/copyright",
+  "display_bounds": [
+    100.16,
+    5.2,
+    100.52,
+    5.51
+  ],
+  "projection": "Local equirectangular, standard parallel 5.36 N; north-up reference",
+  "sources": [
+    {
+      "cache_name": "island.osm",
+      "url": "https://api.openstreetmap.org/api/0.6/relation/12272811/full",
+      "retrieved_at": "2026-10-15T17:08:23.246742+00:00",
+      "sha256": "d8628bd732c778814f3574dfbe4de7f456a44ebfb19a3575da4923526fa88de7"
+    },
+    {
+      "cache_name": "state.osm",
+      "url": "https://api.openstreetmap.org/api/0.6/relation/4445131/full",
+      "retrieved_at": "2026-10-15T17:08:23.248097+00:00",
+      "sha256": "a3df14f4fd36cdade9382490ce16a87c95ef3ff2887e1a9ff1de82fc49f8e6ad"
+    },
+    {
+      "cache_name": "bridge-1.osm",
+      "url": "https://api.openstreetmap.org/api/0.6/way/601267471/full",
+      "retrieved_at": "2026-10-15T17:08:23.249435+00:00",
+      "sha256": "b4820c92a08aacf5d145d8a99f5f77d995ed32e01b719099ec355aa9b4674641"
+    },
+    {
+      "cache_name": "bridge-2.osm",
+      "url": "https://api.openstreetmap.org/api/0.6/way/725050946/full",
+      "retrieved_at": "2026-10-15T17:08:57.408844+00:00",
+      "sha256": "dd996c16c6eded516eb758b138527e35bf41029a591cb8257427edce88acd7b0"
+    },
+    {
+      "cache_name": "ferry.osm",
+      "url": "https://api.openstreetmap.org/api/0.6/map?bbox=100.337,5.404,100.374,5.424",
+      "retrieved_at": "2026-10-15T17:09:28.757450+00:00",
+      "sha256": "d53978f9647734f0b68302318df6de78efdf4c847bc32c18426a01ce0941c4b6"
+    },
+    {
+      "cache_name": "fort-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Fort+Cornwallis%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:09:31.059183+00:00",
+      "sha256": "b50f4510397722b673bcfe551956f1d5e4c2b0a953aa3206946bafc2adf48df1"
+    },
+    {
+      "cache_name": "kho-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Khoo+Kongsi%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:09:41.695392+00:00",
+      "sha256": "0803d282649e5680eb747173222828aa1c07ad41558a04ca80f7d1c228a895c4"
+    },
+    {
+      "cache_name": "jetty-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Chew+Jetty%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:09:52.381906+00:00",
+      "sha256": "f40288b17f7520b32a27cea92b19fb9f8bc3d4e61fbe2f23d7a68cd6ab17246c"
+    },
+    {
+      "cache_name": "hill-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Bukit+Bendera%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:11:37.230516+00:00",
+      "sha256": "ed832a8d2e0779f9e94f89ecd6d2429cbd0f4933a27ee00efeaa7ee96ff72812"
+    },
+    {
+      "cache_name": "kek-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Kek+Lok+Si+Temple%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:10:03.775372+00:00",
+      "sha256": "9e392dca6412f463d9ea6f6cc1ba0e7d0a0f29065dbca834b64025b734e1b04f"
+    },
+    {
+      "cache_name": "beach-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Batu+Ferringhi%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:10:14.387610+00:00",
+      "sha256": "42c8eac55479312a1954f006c5c559deda23eec6843c092a751b9a258c165766"
+    },
+    {
+      "cache_name": "food-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Chowrasta+Market%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:10:24.721537+00:00",
+      "sha256": "a6932fe82f474e9d4b6f12eb29c7370a48bc68677663ea9270b666039a236953"
+    },
+    {
+      "cache_name": "mainland-search.json",
+      "url": "https://nominatim.openstreetmap.org/search?q=Bukit+Mertajam%2C+Penang%2C+Malaysia&format=jsonv2&limit=5",
+      "retrieved_at": "2026-10-15T17:10:35.613938+00:00",
+      "sha256": "0bb204108f7c044b7b37202172aca8f7ce37a8087bb00ee4a9f1c165ccd6250c"
+    }
+  ],
+  "notes": [
+    "OSM source versions are recorded in geography.geojson. Refreshing current API data can return newer versions.",
+    "Coordinates are unmodified OSM coordinates; area labels are representative points.",
+    "No geometry was copied or traced from Google Maps or the artistic reference.",
+    "The statewide polygon includes its inland administrative boundary. Regional view is cropped.",
+    "Only the two named local ferry ways are selected from the bounded API response; unrelated routes are excluded."
+  ]
+}

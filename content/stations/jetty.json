@@ -1,0 +1,194 @@
+{
+ "id": "jetty",
+ "zone": "george-town",
+ "order": 3,
+ "coordinates": [
+  100.3400313,
+  5.4119657
+ ],
+ "name": {
+  "bm": "Jeti Chew",
+  "en": "Chew Jetty"
+ },
+ "category": {
+  "bm": "Warisan",
+  "en": "Heritage"
+ },
+ "blurb": {
+  "bm": "Komuniti tepi air. Ini kawasan kediaman: kekal di laluan awam dan hormati rumah penduduk.",
+  "en": "A waterfront community. People live here: keep to public areas and respect their homes."
+ },
+ "official": {
+  "url": "https://www.mypenang.gov.my/view_directory.php?id=ZW5mTlJKcWR2RXZ5eDkyS29yOVRWdz09",
+  "label": null
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "quiz",
+   "art": 1,
+   "title": {
+    "bm": "Kira bot",
+    "en": "Count the boats"
+   },
+   "ask": {
+    "bm": "Berapa bot yang tertambat di jeti ini?",
+    "en": "How many boats are moored at this jetty?"
+   },
+   "opts": [
+    {
+     "bm": "1",
+     "en": "1"
+    },
+    {
+     "bm": "2",
+     "en": "2",
+     "ok": 1
+    },
+    {
+     "bm": "3",
+     "en": "3"
+    },
+    {
+     "bm": "4",
+     "en": "4"
+    }
+   ],
+   "why": {
+    "bm": "Betul, dua bot! Penduduk jeti masih guna bot.",
+    "en": "Yes, two boats! Jetty residents still use boats."
+   }
+  },
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Tangga kayu",
+     "en": "Wooden ladder",
+     "pts": [
+      [
+       90,
+       215,
+       18
+      ]
+     ]
+    },
+    {
+     "bm": "Tayar getah",
+     "en": "Rubber tyre",
+     "pts": [
+      [
+       107,
+       212,
+       13
+      ],
+      [
+       150,
+       230,
+       13
+      ]
+     ]
+    },
+    {
+     "bm": "Bumbung zink",
+     "en": "Zinc roof",
+     "pts": [
+      [
+       130,
+       88,
+       26
+      ],
+      [
+       178,
+       57,
+       22
+      ],
+      [
+       248,
+       52,
+       22
+      ],
+      [
+       85,
+       145,
+       20
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "memory",
+   "title": {
+    "bm": "Kad kata",
+    "en": "Word cards"
+   },
+   "pairs": [
+    [
+     "Jeti",
+     "Jetty"
+    ],
+    [
+     "Bot",
+     "Boat"
+    ],
+    [
+     "Rumah",
+     "House"
+    ],
+    [
+     "Laut",
+     "Sea"
+    ]
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Jeti Kaum ialah perkampungan atas air di pesisir George Town. Jeti Chew ialah yang paling banyak dikunjungi.",
+   "en": "The Clan Jetties are waterfront villages on George Town’s shore. Chew Jetty is the most visited."
+  },
+  "facts": {
+   "bm": [
+    "Sembilan perkampungan jeti pernah dibina. Tujuh masih ada hari ini: Ong, Lim, Chew, Tan, Lee, Campuran dan Yeoh.",
+    "Komuniti ini berkembang antara tahun 1880-an hingga 1960-an.",
+    "Keluarga Chew berasal dari Tong’an, Xiamen di China."
+   ],
+   "en": [
+    "Nine jetty villages were built. Seven remain today: Ong, Lim, Chew, Tan, Lee, Mixed Clan and Yeoh.",
+    "The community grew between the 1880s and the 1960s.",
+    "The Chew clan came from Tong’an, Xiamen in China."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Rumah kayu yang disambung oleh laluan papan",
+    "Kuil kecil keluarga di jeti",
+    "Ingat: ini rumah orang, jadi cakap perlahan"
+   ],
+   "en": [
+    "Timber houses linked by plank walkways",
+    "Small clan shrines on the jetty",
+    "Remember: these are homes, so keep your voice down"
+   ]
+  },
+  "fun": {
+   "bm": "Pada hari kesembilan Tahun Baru Cina, Jeti Chew menjadi tumpuan sambutan hari lahir Maharaja Jed.",
+   "en": "On the ninth day of Chinese New Year, Chew Jetty is the focus of the Jade Emperor’s birthday celebration."
+  },
+  "src": [
+   [
+    "Wikipedia: Clan Jetties",
+    "https://en.wikipedia.org/wiki/Clan_Jetties"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-21",
+ "review": {
+  "owner": "pending"
+ }
+}

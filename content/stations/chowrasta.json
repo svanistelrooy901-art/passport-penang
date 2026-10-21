@@ -1,0 +1,210 @@
+{
+ "id": "chowrasta",
+ "zone": "george-town",
+ "order": 1,
+ "coordinates": [
+  100.3318417,
+  5.4178195
+ ],
+ "name": {
+  "bm": "Pasar Chowrasta",
+  "en": "Chowrasta Market"
+ },
+ "category": {
+  "bm": "Makan",
+  "en": "Food"
+ },
+ "blurb": {
+  "bm": "Mulakan jejak makan anda di sekitar Chowrasta. Ini satu titik mula, bukan laluan tetap.",
+  "en": "Start your own food trail around Chowrasta. One starting point, not a fixed route."
+ },
+ "official": {
+  "url": "https://mypenang.gov.my/view_directory.php?id=amRoa3REM0h5TFMzY2RhVzgwTjIyQT09",
+  "label": null
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Payung kuning",
+     "en": "Yellow umbrella",
+     "pts": [
+      [
+       24,
+       134,
+       18
+      ]
+     ]
+    },
+    {
+     "bm": "Pintu gerbang melengkung",
+     "en": "Arched entrance",
+     "pts": [
+      [
+       92,
+       108,
+       24
+      ],
+      [
+       130,
+       124,
+       18
+      ]
+     ]
+    },
+    {
+     "bm": "Lampu jalan",
+     "en": "Street lamp",
+     "pts": [
+      [
+       181,
+       212,
+       14
+      ],
+      [
+       260,
+       134,
+       14
+      ],
+      [
+       8,
+       165,
+       12
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "multi",
+   "need": 3,
+   "title": {
+    "bm": "Bahan cendol",
+    "en": "Cendol ingredients"
+   },
+   "ask": {
+    "bm": "Cendol Pulau Pinang! Pilih 3 bahan cendol.",
+    "en": "Penang cendol! Pick 3 cendol ingredients."
+   },
+   "opts": [
+    {
+     "bm": "Santan",
+     "en": "Coconut milk",
+     "ok": 1
+    },
+    {
+     "bm": "Gula Melaka",
+     "en": "Palm sugar",
+     "ok": 1
+    },
+    {
+     "bm": "Cendol hijau",
+     "en": "Green jelly",
+     "ok": 1
+    },
+    {
+     "bm": "Keju",
+     "en": "Cheese"
+    },
+    {
+     "bm": "Sos cili",
+     "en": "Chilli sauce"
+    },
+    {
+     "bm": "Coklat",
+     "en": "Chocolate"
+    }
+   ],
+   "why": {
+    "bm": "Sedap! Santan, gula Melaka dan cendol hijau, atas ais serut.",
+    "en": "Delicious! Coconut milk, palm sugar and green jelly over shaved ice."
+   }
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Makna nama",
+    "en": "What’s in a name"
+   },
+   "ask": {
+    "bm": "Apakah maksud nama \"Chowrasta\"?",
+    "en": "What does \"Chowrasta\" mean?"
+   },
+   "opts": [
+    {
+     "bm": "Simpang empat",
+     "en": "Four crossroads",
+     "ok": 1
+    },
+    {
+     "bm": "Pasar besar",
+     "en": "Big market"
+    },
+    {
+     "bm": "Kuala sungai",
+     "en": "River mouth"
+    },
+    {
+     "bm": "Taman rempah",
+     "en": "Spice garden"
+    }
+   ],
+   "why": {
+    "bm": "Betul! Chowrasta bermaksud simpang empat, merujuk kepada persimpangan jalan di situ.",
+    "en": "Right! Chowrasta means four crossroads, after the road junction there."
+   }
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Pasar Chowrasta di Jalan Penang ialah antara pasar paling terkenal di George Town.",
+   "en": "Chowrasta Market on Penang Road is one of George Town’s best-known markets."
+  },
+  "facts": {
+   "bm": [
+    "Pasar ini dibina pada tahun 1890-an.",
+    "Ia diasaskan oleh masyarakat India di George Town abad ke-19.",
+    "Nama \"Chowrasta\" bermaksud simpang empat, merujuk kepada persimpangan jalan di sekitarnya."
+   ],
+   "en": [
+    "The market was built in the 1890s.",
+    "It was established by the Indian community of 19th-century George Town.",
+    "\"Chowrasta\" means four crossroads, after the road junction around it."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Buah pala dan jeruk pala, cenderahati Pulau Pinang",
+    "Biskut tau sar pneah"
+   ],
+   "en": [
+    "Nutmeg and pickled nutmeg, a Penang souvenir",
+    "Tau sar pneah biscuits"
+   ]
+  },
+  "fun": {
+   "bm": "Buah pala Pulau Pinang begitu terkenal sehingga ia sering dijual sebagai jeruk dan jus.",
+   "en": "Penang nutmeg is so well known that it is often sold pickled and as juice."
+  },
+  "src": [
+   [
+    "Wikipedia: Penang Road",
+    "https://en.wikipedia.org/wiki/Penang_Road,_George_Town"
+   ],
+   [
+    "Penang Travel Tips: Chowrasta Road",
+    "https://www.penang-traveltips.com/chowrasta-road.htm"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-21",
+ "review": {
+  "owner": "pending"
+ }
+}

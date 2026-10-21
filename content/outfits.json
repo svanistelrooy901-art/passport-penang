@@ -1,0 +1,29 @@
+{
+ "outfits": [
+  {
+   "id": "batik",
+   "need": 0
+  },
+  {
+   "id": "melayu",
+   "need": 3
+  },
+  {
+   "id": "samfu",
+   "need": 6
+  },
+  {
+   "id": "kurta",
+   "need": 9
+  },
+  {
+   "id": "explorer",
+   "need": 15
+  }
+ ],
+ "skins": [
+  "#f3cdaa",
+  "#dca578",
+  "#a8704a"
+ ]
+}

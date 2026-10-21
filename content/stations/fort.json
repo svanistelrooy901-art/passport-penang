@@ -1,0 +1,198 @@
+{
+ "id": "fort",
+ "zone": "george-town",
+ "order": 4,
+ "coordinates": [
+  100.3443302,
+  5.420449
+ ],
+ "name": {
+  "bm": "Kota Cornwallis",
+  "en": "Fort Cornwallis"
+ },
+ "category": {
+  "bm": "Warisan",
+  "en": "Heritage"
+ },
+ "blurb": {
+  "bm": "Kota bersejarah di tepi laut George Town, bersebelahan Padang Kota Lama.",
+  "en": "A historic fort on the George Town waterfront, beside the old Padang."
+ },
+ "official": {
+  "url": "https://www.mypenang.gov.my/view_directory.php?id=Q3Z3ZG1Sa2o1dGJDc3VtTWo2dlNpdz09",
+  "label": null
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Rumah api",
+     "en": "Lighthouse",
+     "pts": [
+      [
+       150,
+       82,
+       34
+      ]
+     ]
+    },
+    {
+     "bm": "Pintu gerbang",
+     "en": "Gateway",
+     "pts": [
+      [
+       205,
+       186,
+       22
+      ]
+     ]
+    },
+    {
+     "bm": "Meriam",
+     "en": "Cannon",
+     "pts": [
+      [
+       88,
+       134,
+       14
+      ],
+      [
+       76,
+       154,
+       14
+      ],
+      [
+       106,
+       164,
+       14
+      ],
+      [
+       145,
+       170,
+       15
+      ],
+      [
+       195,
+       156,
+       14
+      ],
+      [
+       270,
+       131,
+       16
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz tahun",
+    "en": "Year quiz"
+   },
+   "ask": {
+    "bm": "Francis Light mendarat di sini pada tahun…",
+    "en": "Francis Light landed here in…"
+   },
+   "opts": [
+    {
+     "bm": "1786",
+     "en": "1786",
+     "ok": 1
+    },
+    {
+     "bm": "1957",
+     "en": "1957"
+    },
+    {
+     "bm": "1880",
+     "en": "1880"
+    },
+    {
+     "bm": "1700",
+     "en": "1700"
+    }
+   ],
+   "why": {
+    "bm": "Ya, 1786! Kota pertama hanya diperbuat daripada batang nibung.",
+    "en": "Yes, 1786! The first fort was just a stockade of nibong palm trunks."
+   }
+  },
+  {
+   "type": "order",
+   "title": {
+    "bm": "Garis masa",
+    "en": "Timeline"
+   },
+   "items": [
+    {
+     "bm": "1786 · Kubu kayu nibung",
+     "en": "1786 · Nibong palm stockade"
+    },
+    {
+     "bm": "1804 · Mula dibina semula dengan bata",
+     "en": "1804 · Rebuilding in brick begins"
+    },
+    {
+     "bm": "1810 · Kota bata siap",
+     "en": "1810 · Brick fort completed"
+    },
+    {
+     "bm": "1882 · Rumah api didirikan",
+     "en": "1882 · Lighthouse put up"
+    }
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Kota Cornwallis ialah kota bersejarah di hujung timur laut George Town.",
+   "en": "Fort Cornwallis is a historic fort at the north-east tip of George Town."
+  },
+  "facts": {
+   "bm": [
+    "Pada 1786, Kapten Francis Light membina kubu pertama daripada batang pokok nibung.",
+    "Dari 1804 hingga 1810, banduan India membinanya semula dengan bata dan batu.",
+    "Ia dinamakan sempena Earl Cornwallis, Gabenor Jeneral Bengal ketika itu."
+   ],
+   "en": [
+    "In 1786, Captain Francis Light built the first stockade from nibong palm trunks.",
+    "From 1804 to 1810, Indian convict labourers rebuilt it in brick and stone.",
+    "It is named after Earl Cornwallis, Governor-General of Bengal at the time."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Rumah api besi setinggi 21 meter (1882)",
+    "Meriam Seri Rambai",
+    "Dinding kubu dan pintu gerbang"
+   ],
+   "en": [
+    "The 21-metre steel lighthouse (1882)",
+    "The Seri Rambai cannon",
+    "The ramparts and gateway"
+   ]
+  },
+  "fun": {
+   "bm": "Meriam Seri Rambai dibuat pada 1603 dan berpindah tangan dari Belanda ke Johor, Aceh dan Selangor sebelum sampai ke Pulau Pinang.",
+   "en": "The Seri Rambai cannon was cast in 1603 and passed from the Dutch to Johor, Aceh and Selangor before reaching Penang."
+  },
+  "src": [
+   [
+    "Wikipedia: Fort Cornwallis",
+    "https://en.wikipedia.org/wiki/Fort_Cornwallis"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-21",
+ "review": {
+  "owner": "pending"
+ }
+}

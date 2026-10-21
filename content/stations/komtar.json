@@ -1,0 +1,166 @@
+{
+ "id": "komtar",
+ "zone": "george-town",
+ "order": 0,
+ "coordinates": [
+  100.32981,
+  5.41456
+ ],
+ "name": {
+  "bm": "Komtar",
+  "en": "Komtar"
+ },
+ "category": {
+  "bm": "Bandar",
+  "en": "City"
+ },
+ "blurb": {
+  "bm": "Menara ikonik George Town, betul-betul di sebelah kawasan warisan.",
+  "en": "George Town’s landmark tower, right beside the heritage quarter."
+ },
+ "official": {
+  "url": "https://www.openstreetmap.org/way/993213417",
+  "label": {
+   "bm": "Info lokasi ↗",
+   "en": "Location info ↗"
+  }
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Jalur pelangi",
+     "en": "Rainbow band",
+     "pts": [
+      [
+       137,
+       38,
+       26
+      ]
+     ]
+    },
+    {
+     "bm": "Rumah kedai lama",
+     "en": "Old shophouses",
+     "pts": [
+      [
+       80,
+       208,
+       34
+      ]
+     ]
+    },
+    {
+     "bm": "Pokok palma",
+     "en": "Palm tree",
+     "pts": [
+      [
+       22,
+       205,
+       18
+      ],
+      [
+       232,
+       203,
+       18
+      ],
+      [
+       235,
+       240,
+       16
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz nama",
+    "en": "Name quiz"
+   },
+   "ask": {
+    "bm": "KOMTAR ialah singkatan untuk…",
+    "en": "KOMTAR stands for…"
+   },
+   "opts": [
+    {
+     "bm": "Kompleks Tun Abdul Razak",
+     "en": "Kompleks Tun Abdul Razak",
+     "ok": 1
+    },
+    {
+     "bm": "Kota Menara Tinggi",
+     "en": "Kota Menara Tinggi"
+    },
+    {
+     "bm": "Kompleks Tanjung Raya",
+     "en": "Kompleks Tanjung Raya"
+    },
+    {
+     "bm": "Kedai Orang Tempatan",
+     "en": "Kedai Orang Tempatan"
+    }
+   ],
+   "why": {
+    "bm": "Ya! Sempena Tun Abdul Razak, Perdana Menteri kedua Malaysia.",
+    "en": "Yes! Named after Tun Abdul Razak, Malaysia’s second Prime Minister."
+   }
+  },
+  {
+   "type": "puzzle",
+   "title": {
+    "bm": "Susun menara",
+    "en": "Rebuild the tower"
+   }
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "KOMTAR (Kompleks Tun Abdul Razak) ialah kompleks pentadbiran dan beli-belah di tengah George Town.",
+   "en": "KOMTAR (Kompleks Tun Abdul Razak) is a civic and shopping complex in the heart of George Town."
+  },
+  "facts": {
+   "bm": [
+    "Dibina antara tahun 1974 hingga 1986.",
+    "Menaranya setinggi kira-kira 249 meter, dengan 68 tingkat.",
+    "Ia bangunan tertinggi di Malaysia sehingga 1988, apabila Menara Maybank mengatasinya."
+   ],
+   "en": [
+    "Built between 1974 and 1986.",
+    "Its tower is about 249 metres tall, with 68 floors.",
+    "It was Malaysia’s tallest building until 1988, when Maybank Tower overtook it."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Pemandangan bandar lama dan baru dari tingkat atas",
+    "Rumah kedai lama di sekeliling kaki menara"
+   ],
+   "en": [
+    "Views of the old and new city from the top",
+    "Old shophouses around the foot of the tower"
+   ]
+  },
+  "fun": {
+   "bm": "Sehingga November 1986, ia juga bangunan tertinggi di Asia Tenggara.",
+   "en": "Until November 1986 it was also the tallest building in Southeast Asia."
+  },
+  "src": [
+   [
+    "Wikipedia: Komtar",
+    "https://en.wikipedia.org/wiki/Komtar"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-21",
+ "review": {
+  "owner": "pending"
+ }
+}

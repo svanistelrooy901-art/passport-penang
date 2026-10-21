@@ -1,0 +1,245 @@
+{
+ "id": "george-town",
+ "name": {
+  "bm": "George Town",
+  "en": "George Town"
+ },
+ "label": {
+  "bm": "ZON 1",
+  "en": "ZONE 1"
+ },
+ "stations": [
+  "komtar",
+  "chowrasta",
+  "kho",
+  "jetty",
+  "fort"
+ ],
+ "world": {
+  "w": 2000,
+  "h": 1800,
+  "cell": 10,
+  "grid": [
+   200,
+   180
+  ]
+ },
+ "landmarks": {
+  "fort": [
+   1366.9,
+   584
+  ],
+  "kho": [
+   984.7,
+   898.1
+  ],
+  "jetty": [
+   1223.3,
+   1052.1
+  ],
+  "chowrasta": [
+   564,
+   717.6
+  ],
+  "komtar": [
+   463.7,
+   883.1
+  ]
+ },
+ "sprites": {
+  "fort": [
+   330,
+   284
+  ],
+  "kho": [
+   270,
+   287
+  ],
+  "jetty": [
+   290,
+   301
+  ],
+  "chowrasta": [
+   270,
+   269
+  ],
+  "komtar": [
+   250,
+   263
+  ]
+ },
+ "triggers": {
+  "fort": [
+   1365,
+   625
+  ],
+  "kho": [
+   985,
+   935
+  ],
+  "jetty": [
+   1115,
+   1055
+  ],
+  "chowrasta": [
+   565,
+   755
+  ],
+  "komtar": [
+   465,
+   925
+  ]
+ },
+ "start": [
+  503,
+  1003
+ ],
+ "ferryStop": [
+  1365,
+  925
+ ],
+ "ferryLine": [
+  [
+   1420.1,
+   947.8
+  ],
+  [
+   1455.4,
+   963.9
+  ],
+  [
+   1530.2,
+   1007.1
+  ],
+  [
+   1555.3,
+   1023.5
+  ],
+  [
+   1574.8,
+   1051.6
+  ],
+  [
+   1609.9,
+   1097.8
+  ],
+  [
+   1658.1,
+   1144.2
+  ],
+  [
+   1735.4,
+   1200.8
+  ],
+  [
+   1933.8,
+   1352.1
+  ],
+  [
+   2179.4,
+   1525.3
+  ]
+ ],
+ "cats": [
+  [
+   705,
+   1505
+  ],
+  [
+   145,
+   975
+  ],
+  [
+   335,
+   565
+  ],
+  [
+   1035,
+   655
+  ],
+  [
+   255,
+   1565
+  ],
+  [
+   965,
+   1185
+  ],
+  [
+   465,
+   1315
+  ],
+  [
+   745,
+   465
+  ]
+ ],
+ "npcs": [
+  {
+   "id": "auntie",
+   "x": 640,
+   "y": 860,
+   "look": {
+    "skin": 1,
+    "hair": 2
+   },
+   "outfit": "kurung",
+   "wander": false,
+   "say": {
+    "bm": "Lapar? Cuba asam laksa dan cendol sekitar Chowrasta!",
+    "en": "Hungry? Try asam laksa and cendol around Chowrasta!"
+   }
+  },
+  {
+   "id": "uncle",
+   "x": 1100,
+   "y": 760,
+   "look": {
+    "skin": 0,
+    "hair": 0,
+    "grey": 1
+   },
+   "outfit": "samfuB",
+   "wander": true,
+   "say": {
+    "bm": "Di jeti, cakap perlahan ya. Ada orang tinggal di situ.",
+    "en": "At the jetty keep your voice down. People live there."
+   }
+  },
+  {
+   "id": "kid",
+   "x": 820,
+   "y": 1100,
+   "look": {
+    "skin": 2,
+    "hair": 1
+   },
+   "outfit": "kurta",
+   "wander": true,
+   "say": {
+    "bm": "Ada kucing sembunyi di lorong-lorong! Dah jumpa berapa?",
+    "en": "Cats are hiding in the lanes! How many have you found?"
+   }
+  }
+ ],
+ "exits": [
+  {
+   "kind": "bus",
+   "at": "start",
+   "to": "air-itam",
+   "label": {
+    "bm": "Hentian bas Komtar",
+    "en": "Komtar bus stop"
+   }
+  },
+  {
+   "kind": "ferry",
+   "at": "ferryStop",
+   "to": "butterworth",
+   "label": {
+    "bm": "Jeti feri",
+    "en": "Ferry jetty"
+   }
+  }
+ ]
+}

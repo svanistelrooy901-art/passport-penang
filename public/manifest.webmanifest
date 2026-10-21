@@ -1,0 +1,11 @@
+{
+  "name": "Pasport Penang",
+  "short_name": "Pasport",
+  "description": "Explore Penang in 3D, play at every station and collect stamps. BM | EN.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#12384a",
+  "theme_color": "#12384a",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

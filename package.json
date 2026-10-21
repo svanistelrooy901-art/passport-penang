@@ -1,0 +1,26 @@
+{
+  "name": "pasport-penang",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Pasport Penang: a 3D explore-and-learn game of Penang for families (BM | EN).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "node tests/e2e/smoke.mjs",
+    "check:content": "vitest run tests/content.test.ts",
+    "bake:zone": "python3 tools/bake_zone.py"
+  },
+  "dependencies": {
+    "three": "0.169.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.169.0",
+    "playwright": "1.61.1",
+    "typescript": "5.8.3",
+    "vite": "6.4.4",
+    "vitest": "5.0.3"
+  }
+}

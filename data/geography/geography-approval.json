@@ -1,0 +1,15 @@
+{
+  "status": "approved",
+  "approved_by": "Mamu",
+  "approval_date": "2026-10-16",
+  "timezone": "Asia/Kuala_Lumpur",
+  "source": "Owner message: approved, in reply to the P02.2 geography draft",
+  "reviewed_commit": "18aa68460763b94b96c972f35a6af6e743d6d9a5",
+  "scope": "Geographic foundation, including both bridge footprints, ferry routes and representative destination coordinates",
+  "artwork_status": "In progress; geography approval does not mark the detailed illustrated-world treatment complete",
+  "files": {
+    "data/geography.geojson": "5337074697d8337eec90cc99848c36adbf96654dd704ec34b5d6b3f6c4349852",
+    "data/places.json": "dce59eb19d71bd49aa01599425c8b8dbf327d954bbc2f3fe4fc2349de7370d96",
+    "data/source-receipts.json": "e63ed951b53c4d7f9abb64444eafd9a1c52e831d6ee6db4b93bbc8431d88b5dc"
+  }
+}

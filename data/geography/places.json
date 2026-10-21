@@ -1,0 +1,146 @@
+[
+  {
+    "id": "fort",
+    "number": 1,
+    "name": "Fort Cornwallis",
+    "cat": "Heritage",
+    "description": "A historic fort beside the George Town waterfront.",
+    "coordinates": [
+      100.3443302,
+      5.420449
+    ],
+    "osm_type": "relation",
+    "osm_id": 5827552,
+    "official_url": "https://www.mypenang.gov.my/view_directory.php?id=Q3Z3ZG1Sa2o1dGJDc3VtTWo2dlNpdz09",
+    "official_label": "Official tourism listing",
+    "coordinate_note": "Site centre; not an entrance",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "kho",
+    "number": 2,
+    "name": "Khoo Kongsi",
+    "cat": "Heritage",
+    "description": "Discover a clanhouse and its intricate architecture in Cannon Square.",
+    "coordinates": [
+      100.337592,
+      5.4142654
+    ],
+    "osm_type": "node",
+    "osm_id": 6832811985,
+    "official_url": "https://www.khookongsi.com.my/",
+    "official_label": "Official visitor information",
+    "coordinate_note": "Mapped attraction node",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "jetty",
+    "number": 3,
+    "name": "Clan Jetties · Chew Jetty",
+    "cat": "Heritage",
+    "description": "Explore a waterfront community with respect for the people who live here.",
+    "coordinates": [
+      100.3400313,
+      5.4119657
+    ],
+    "osm_type": "relation",
+    "osm_id": 13314976,
+    "official_url": "https://www.mypenang.gov.my/view_directory.php?id=ZW5mTlJKcWR2RXZ5eDkyS29yOVRWdz09",
+    "official_label": "Official tourism listing",
+    "coordinate_note": "Chew Jetty represents the wider Clan Jetties area",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "hill",
+    "number": 4,
+    "name": "Penang Hill",
+    "cat": "Nature",
+    "description": "Discover the hill landscape and find current visitor guidance from Penang Hill Corporation.",
+    "coordinates": [
+      100.2656972,
+      5.4228655
+    ],
+    "osm_type": "node",
+    "osm_id": 1387210299,
+    "official_url": "https://www.penanghill.gov.my/index.php/en/",
+    "official_label": "Official visitor information",
+    "coordinate_note": "Hill reference point; not the lower funicular station",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "kek",
+    "number": 5,
+    "name": "Kek Lok Si Temple",
+    "cat": "Culture",
+    "description": "Discover temple architecture in the hills of Air Itam.",
+    "coordinates": [
+      100.2737956,
+      5.3988748
+    ],
+    "osm_type": "way",
+    "osm_id": 768570111,
+    "official_url": "https://kekloksitemple.com/",
+    "official_label": "Official visitor information",
+    "coordinate_note": "Temple building centre; not an entrance",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "beach",
+    "number": 6,
+    "name": "Batu Ferringhi",
+    "cat": "Nature",
+    "description": "Explore the northern coast. This pin represents the locality, rather than a particular beach entrance.",
+    "coordinates": [
+      100.2485887,
+      5.4708863
+    ],
+    "osm_type": "relation",
+    "osm_id": 11203462,
+    "official_url": "https://www.mypenang.gov.my/abt_png.php?id=em1DVjlJRHFtbFpqWGVwZldaMjVUUT09",
+    "official_label": "Penang tourism overview",
+    "coordinate_note": "Locality reference point",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "food",
+    "number": 7,
+    "name": "Food trail · Chowrasta",
+    "cat": "Food",
+    "description": "Start your own food exploration around Chowrasta. This is one market anchor, not a mapped walking route.",
+    "coordinates": [
+      100.3318417,
+      5.4178195
+    ],
+    "osm_type": "way",
+    "osm_id": 264409107,
+    "official_url": "https://mypenang.gov.my/view_directory.php?id=amRoa3REM0h5TFMzY2RhVzgwTjIyQT09",
+    "official_label": "Official tourism listing",
+    "coordinate_note": "Chowrasta Market building centre; one representative stop",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  },
+  {
+    "id": "mainland",
+    "number": 8,
+    "name": "Bukit Mertajam",
+    "cat": "Local",
+    "description": "Discover mainland neighbourhoods and make room for a Seberang Perai adventure.",
+    "coordinates": [
+      100.4609867,
+      5.3642519
+    ],
+    "osm_type": "relation",
+    "osm_id": 7013106,
+    "official_url": "https://www.mypenang.gov.my/abt_png.php?id=em1DVjlJRHFtbFpqWGVwZldaMjVUUT09",
+    "official_label": "Penang tourism overview",
+    "coordinate_note": "Town reference point; not a visitor entrance",
+    "verified_date": "2026-10-15",
+    "verification_scope": "Name and general locality; not entrance, opening hours or fees"
+  }
+]

@@ -1,0 +1,193 @@
+{
+ "id": "kho",
+ "zone": "george-town",
+ "order": 2,
+ "coordinates": [
+  100.337592,
+  5.4142654
+ ],
+ "name": {
+  "bm": "Khoo Kongsi",
+  "en": "Khoo Kongsi"
+ },
+ "category": {
+  "bm": "Warisan",
+  "en": "Heritage"
+ },
+ "blurb": {
+  "bm": "Rumah persatuan keluarga dengan seni bina yang sangat halus di Cannon Square.",
+  "en": "A clanhouse with intricate architecture in Cannon Square."
+ },
+ "official": {
+  "url": "https://www.khookongsi.com.my/",
+  "label": null
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Bumbung berukir",
+     "en": "Carved roof",
+     "pts": [
+      [
+       135,
+       62,
+       38
+      ],
+      [
+       90,
+       95,
+       20
+      ],
+      [
+       205,
+       95,
+       22
+      ]
+     ]
+    },
+    {
+     "bm": "Tangga besar",
+     "en": "Grand staircase",
+     "pts": [
+      [
+       172,
+       196,
+       28
+      ]
+     ]
+    },
+    {
+     "bm": "Tempayan",
+     "en": "Large urn",
+     "pts": [
+      [
+       178,
+       234,
+       18
+      ],
+      [
+       215,
+       222,
+       16
+      ],
+      [
+       160,
+       182,
+       12
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz keluarga",
+    "en": "Clan quiz"
+   },
+   "ask": {
+    "bm": "Khoo Kongsi ialah rumah persatuan untuk keluarga bernama…",
+    "en": "Khoo Kongsi is the clanhouse of families named…"
+   },
+   "opts": [
+    {
+     "bm": "Khoo",
+     "en": "Khoo",
+     "ok": 1
+    },
+    {
+     "bm": "Lim",
+     "en": "Lim"
+    },
+    {
+     "bm": "Tan",
+     "en": "Tan"
+    },
+    {
+     "bm": "Cheah",
+     "en": "Cheah"
+    }
+   ],
+   "why": {
+    "bm": "Betul! Nama penuhnya Leong San Tong Khoo Kongsi.",
+    "en": "Right! Its full name is Leong San Tong Khoo Kongsi."
+   }
+  },
+  {
+   "type": "order",
+   "title": {
+    "bm": "Garis masa",
+    "en": "Timeline"
+   },
+   "items": [
+    {
+     "bm": "1851 · Rumah kongsi pertama dibina",
+     "en": "1851 · First clanhouse built"
+    },
+    {
+     "bm": "1901 · Terbakar, dikatakan dipanah petir",
+     "en": "1901 · Burned down, said to be lightning"
+    },
+    {
+     "bm": "1906 · Bangunan baharu siap",
+     "en": "1906 · New building completed"
+    }
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Leong San Tong Khoo Kongsi ialah rumah persatuan keluarga Khoo, dan disebut rumah kongsi Hokkien terbesar di Malaysia.",
+   "en": "Leong San Tong Khoo Kongsi is the clanhouse of the Khoo families, described as the largest Hokkien clanhouse in Malaysia."
+  },
+  "facts": {
+   "bm": [
+    "Nenek moyang keluarga Khoo berasal dari wilayah Fujian, China.",
+    "Rumah kongsi pertama dibina pada 1851. Ia terbakar pada 1901, dikatakan dipanah petir.",
+    "Versi yang lebih kecil dibina semula dari 1902 dan siap pada 1906."
+   ],
+   "en": [
+    "The Khoo ancestors came from Fujian province, China.",
+    "The first clanhouse was built in 1851. It burned down in 1901, reportedly struck by lightning.",
+    "A smaller version was rebuilt from 1902 and completed in 1906."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Ukiran dan rasuk kayu yang sangat halus",
+    "Pentas opera tradisional",
+    "Dataran granit dikelilingi rumah kedai lama"
+   ],
+   "en": [
+    "Very fine carvings and wooden beams",
+    "The traditional opera stage",
+    "The granite square ringed by old rowhouses"
+   ]
+  },
+  "fun": {
+   "bm": "Opera Cina masih dipentaskan di sini pada bulan ketujuh kalendar lunar.",
+   "en": "Chinese operas are still staged here during the seventh lunar month."
+  },
+  "src": [
+   [
+    "Wikipedia: Khoo Kongsi",
+    "https://en.wikipedia.org/wiki/Khoo_Kongsi"
+   ],
+   [
+    "Khoo Kongsi (rasmi)",
+    "https://khookongsi.com.my/history/the-origin-and-establishment"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-21",
+ "review": {
+  "owner": "pending"
+ }
+}

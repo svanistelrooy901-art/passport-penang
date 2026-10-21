@@ -1,8 +1,9 @@
 /* Zone world: raised diorama island from the approved coastline, instanced shophouses and trees,
    station models, cats, ferry, signposts, DOM labels and the reveal state. */
 import * as THREE from 'three';
-import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera } from './core';
-import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT } from './stations';
+import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline } from './core';
+import { bakeDeep, bakeChildren, disposeTree } from './bake';
+import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT, stationMat } from './stations';
 import { makeChar, poseChar, faceTo } from './character';
 import { ZONE, W3, IDS, STATIONS } from '../content';
 import { save, tierOf } from '../game/save';
@@ -73,6 +74,7 @@ function buildHouses() {
     o.position.y = p.h; o.scale.set(p.w + 3, 11 + (p.pc % 3) * 2, p.d + 5); o.updateMatrix(); roofs.setMatrixAt(i, o.matrix); roofs.setColorAt(i, c.set(ROOFC[p.rc]));
   });
   walls.castShadow = roofs.castShadow = walls.receiveShadow = roofs.receiveShadow = true; scene.add(walls, roofs);
+  addOutline(walls, .9); addOutline(roofs, .9);
 }
 function buildTrees() {
   const n = W3.trees.length; const can = new THREE.InstancedMesh(GEO.ico, mat('#ffffff', { flat: true }), n * 2); const tr = new THREE.InstancedMesh(GEO.cyl8, mat('#7a5a3a'), n);
@@ -81,14 +83,16 @@ function buildTrees() {
     o.position.set(x, 9, y); o.rotation.set(0, 0, 0); o.scale.set(2.4, 18, 2.4); o.updateMatrix(); tr.setMatrixAt(i, o.matrix);
     for (let j = 0; j < 2; j++) { o.position.set(x + (j ? r * .3 : -r * .2), 20 + r * .55 + j * 6, y + (j ? -r * .2 : r * .15)); o.rotation.set(i * .7, i * 1.3 + j, 0); const s = r * (j ? .75 : 1.05); o.scale.set(s, s * .85, s); o.updateMatrix(); can.setMatrixAt(k, o.matrix); can.setColorAt(k++, c.set(greens[(i + j) % 4])); }
   });
-  can.castShadow = tr.castShadow = true; scene.add(can, tr);
+  can.castShadow = tr.castShadow = true; scene.add(can, tr); addOutline(can, .8, '#2f4a2a');
 }
 function buildStations() {
   for (const id of IDS) {
     const g = BUILDERS[id](); const [x, y] = ZONE.landmarks[id]; const off = MODEL_OFFSET[id];
     if (off === 'trigger') { const [tx, ty] = ZONE.triggers[id]; g.position.set(tx + 18 * Math.cos(g.userData.theta), 0, ty + 18 * Math.sin(g.userData.theta)); }
     else g.position.set(x + off[0], 0, y + off[1]);
-    g.userData.id = id; g.traverse(m => { m.userData.id = id; }); landmarkGroups[id] = g; scene.add(g);
+    scene.add(g); bakeDeep(g, stationMat(id));
+    const meshes: THREE.Mesh[] = []; g.traverse((m: any) => { if (m.isMesh && !m.userData.outline) meshes.push(m); }); meshes.forEach(m => addOutline(m, 1.1));
+    g.userData.id = id; g.traverse(m => { m.userData.id = id; }); landmarkGroups[id] = g;
   }
 }
 const CAT3 = [['#e8964a', '#f7d3a8'], ['#2b2433', '#55505e'], ['#f4efe6', '#d9cfc0'], ['#9a8f84', '#c9c0b5'], ['#e8964a', '#f4efe6'], ['#2b2433', '#f4efe6'], ['#d9a36a', '#f4efe6'], ['#9a8f84', '#2b2433']];
@@ -97,17 +101,34 @@ function buildCats() {
     const [a, b] = CAT3[i % 8]; const g = G();
     g.add(M('sph', a, 6, 5.5, 8, 0, 5.5, 0), M('sph', b, 3.4, 3.6, 1.5, 0, 5, 6.6), M('sph', a, 5, 4.6, 4.6, 0, 13, 5), M('cone', a, 1.8, 4, 1.6, -2.6, 18.5, 5), M('cone', a, 1.8, 4, 1.6, 2.6, 18.5, 5));
     g.add(M('sph', '#2b2433', .8, .9, .6, -1.8, 13.6, 9.3, { noShadow: 1 }), M('sph', '#2b2433', .8, .9, .6, 1.8, 13.6, 9.3, { noShadow: 1 }));
-    const tl = M('cyl8', a, 1.2, 12, 1.2, 0, 9, -8); tl.rotation.x = -.6; g.add(tl); g.userData.tail = tl;
-    g.position.set(p[0], 0, p[1]); g.rotation.y = (i * 1.7) % 6.28; g.scale.setScalar(1.1); scene.add(g); catMeshes[i] = g; g.visible = !save.cats.includes(i);
+    const tl = M('cyl8', a, 1.2, 12, 1.2, 0, 9, -8); tl.rotation.x = -.6; tl.userData.keep = true; g.add(tl); g.userData.tail = tl;
+    g.position.set(p[0], 0, p[1]); g.rotation.y = (i * 1.7) % 6.28; g.scale.setScalar(1.1); scene.add(g);
+    const body = bakeChildren(g, VCMAT); if (body) addOutline(body, .5); addOutline(tl, .5);
+    catMeshes[i] = g; g.visible = !save.cats.includes(i);
   });
 }
 function buildFerry() {
   const g = G(); g.add(M('box', '#f4f1ea', 70, 10, 24, 0, -2, 0), M('box', '#2f6fb0', 72, 3, 25, 0, -6, 0), M('box', '#f4f1ea', 44, 10, 20, -4, 8, 0), M('box', '#f3c46a', 46, 2, 21, -4, 14, 0));
   const bow = M('cone', '#f4f1ea', 12, 14, 12, 40, -2, 0); bow.rotation.z = -Math.PI / 2; g.add(bow);
   for (let i = 0; i < 5; i++) g.add(M('box', '#4d6a78', 5, 4, 1, -20 + i * 8, 9, 10.3, { noShadow: 1 }));
-  ferryG = g; scene.add(g);
+  ferryG = g; scene.add(g); const fm = bakeDeep(g, VCMAT); if (fm) addOutline(fm, 1);
 }
-function post(x: number, y: number) { const g = G(); g.add(M('cyl8', '#5c4630', 1.6, 30, 1.6, 0, 15, 0), M('box', '#12384a', 26, 12, 2, 0, 32, 0)); g.position.set(x, 0, y); scene.add(g); }
+function post(x: number, y: number) { const g = G(); g.add(M('cyl8', '#5c4630', 1.6, 30, 1.6, 0, 15, 0), M('box', '#12384a', 26, 12, 2, 0, 32, 0)); g.position.set(x, 0, y); scene.add(g); const m = bakeDeep(g, VCMAT); if (m) addOutline(m, .7); }
+const VCMAT = new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: gradient });
+
+/* ---------- clouds: drift around the edges of the zone, never over the play area ---------- */
+const clouds: THREE.Mesh[] = [];
+function buildClouds() {
+  const cm = new THREE.MeshToonMaterial({ color: '#ffffff', gradientMap: gradient, transparent: true, opacity: .94 });
+  const W = W3.w, H = W3.h; const spots = [[-260, 200], [-320, 900], [-240, 1600], [2300, 300], [2380, 1050], [2260, 1750], [400, -300], [1300, -340], [700, 2150], [1600, 2120]];
+  spots.forEach(([x, z], i) => {
+    const g = G(); const n = 5 + (i % 3);
+    for (let k = 0; k < n; k++) { const r = 34 + ((i * 7 + k * 13) % 30); g.add(M('ico', '#ffffff', r, r * .62, r * .9, (k - n / 2) * 42 + ((k * 17) % 20), ((k * 5) % 3) * 8, ((k * 11) % 5) * 12 - 24)); }
+    const m = bakeDeep(g, cm, false)!; m.position.set(x, 430 + (i % 4) * 40, z); m.userData.home = [x, z]; m.userData.speed = 6 + (i % 4) * 2; scene.add(m); clouds.push(m);
+    scene.remove(g);
+  });
+  void W; void H;
+}
 
 /* ---------- labels ---------- */
 const labelLayer = document.createElement('div'); labelLayer.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden';
@@ -140,6 +161,7 @@ export function updateLabels() {
 const exitPost = (ex: any, at: [number, number]): [number, number] => ex.kind === 'bus' ? [at[0] - 60, at[1] - 10] : [at[0] + 40, at[1]];
 
 /* ---------- reveal state ---------- */
+export const motion = { reduced: false };
 export const RADII = [0, 190, 260, 340], START_R = 230, SAT_LEVEL = [.38, .62, .82, 1];
 export const revState: Record<string, number> = {};
 export const reveals: any[] = [];
@@ -159,7 +181,7 @@ export function uploadReveal() {
 
 /* ---------- actors ---------- */
 export function rebuildPlayer() {
-  if (playerMesh) scene.remove(playerMesh);
+  if (playerMesh) { scene.remove(playerMesh); disposeTree(playerMesh); }
   playerMesh = makeChar(save.look, save.outfit, true); playerMesh.scale.setScalar(.95); scene.add(playerMesh);
   const ring = new THREE.Mesh(new THREE.RingGeometry(10, 12.5, 32), new THREE.MeshBasicMaterial({ color: '#f3c46a', transparent: true, opacity: .9 }));
   ring.rotation.x = -Math.PI / 2; ring.position.y = .6; playerMesh.add(ring);
@@ -182,12 +204,13 @@ export function updateWorld(dt: number, t: number) {
   const a = F[si], b = F[si + 1], kk = Math.min(1, want / seg[si]); const fdir = ferryT < .5 ? 1 : -1;
   ferryG.position.set(a[0] + (b[0] - a[0]) * kk, -3 + Math.sin(t * 1.6) * .6, a[1] + (b[1] - a[1]) * kk);
   ferryG.rotation.y = Math.atan2(-(b[1] - a[1]) * fdir, (b[0] - a[0]) * fdir);
-  (waterFx.material as THREE.ShaderMaterial).uniforms.t.value = t;
+  (waterFx.material as THREE.ShaderMaterial).uniforms.t.value = motion.reduced ? 0 : t;
+  for (const c of clouds) { const [hx] = c.userData.home; c.position.x = hx + Math.sin(t * c.userData.speed * .004 + hx) * 140; }
 }
 
 export function buildWorld(groundT: THREE.Texture, seaT: THREE.Texture) {
   document.getElementById('app')!.insertBefore(labelLayer, document.querySelector('.hud-top'));
-  buildIsland(groundT, seaT); buildHouses(); buildTrees(); buildStations(); buildCats(); buildFerry();
+  buildIsland(groundT, seaT); buildHouses(); buildTrees(); buildStations(); buildCats(); buildFerry(); buildClouds();
   for (const ex of ZONE.exits) { const [x, y] = exitPost(ex, (ZONE as any)[ex.at]); post(x, y); mkLabel('exit-' + ex.kind, 'sign'); }
   for (const id of IDS) mkLabel(id, 'lm');
   for (const n of npcs) { mkLabel('npc-' + n.id, 'bub'); const m = makeChar(n.look, n.outfit, false); m.scale.setScalar(.88); scene.add(m); npcMeshes.push(m); }

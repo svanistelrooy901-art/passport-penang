@@ -9,4 +9,5 @@ export const keysDown = new Set<string>();
 export const hooks: {
   openStation: (id: string) => void; refreshText: () => void; toast: (m: string) => void; rebuildPlayer: () => void;
   resetWorld: () => void; startReveal: (r: any) => void; sfx: (f: number, d: number, t?: OscillatorType) => void;
+  applySettings: () => void; restartTutorial: () => void; onStart: () => void; tutorial: (e: 'station' | 'game') => void;
 } = {} as any;

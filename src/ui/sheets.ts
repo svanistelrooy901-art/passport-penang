@@ -7,6 +7,7 @@ import { sfx } from '../audio';
 import { $, nm, toast, setRerender } from './hud';
 import { openSheet, closeSheet, q, qa, esc, icon, ICON_X, ICON_BACK, ICON_TICK } from './dom';
 import { startGame } from './games';
+import { adSlot, fillAds } from '../ads';
 import { charPreview } from '../engine/character';
 import { RADII } from '../engine/world';
 
@@ -23,8 +24,8 @@ export function openStation(id: string) {
    <div class="art"><img src="${sprite(id, !tier)}" alt="${esc(nm(id))}" style="${tier && tier < 3 ? 'filter:saturate(' + (.35 + tier * .3) + ')' : ''}"></div>
    <div class="row" style="justify-content:space-between"><b style="font-size:14px">${t.tiers[tier]} · ${tier}/3</b>${medals(id)}</div>
    <p>${esc(st.blurb[save.lang])}</p><div class="games">${gamesHtml}</div>
-   <button type="button" class="kisah-btn ${lock ? 'locked' : ''}" id="kis"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${lock ? '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>' : '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/>'}</svg><span style="display:flex;flex-direction:column;gap:2px"><b>${t.kisah}</b><span style="font-size:12px;font-weight:800">${lock ? t.kisahLock : t.kisahOpen}</span></span></button>`,
-    () => { $('x').onclick = closeSheet; qa('.game').forEach(b => b.onclick = () => startGame(id, +b.dataset.g!)); $('kis').onclick = () => { if (tierOf(id) === 3) openKisah(id); else { sfx(220, .08); toast(t.kisahLock); } }; });
+   <button type="button" class="kisah-btn ${lock ? 'locked' : ''}" id="kis"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${lock ? '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>' : '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/>'}</svg><span style="display:flex;flex-direction:column;gap:2px"><b>${t.kisah}</b><span style="font-size:12px;font-weight:800">${lock ? t.kisahLock : t.kisahOpen}</span></span></button>${adSlot('station')}`,
+    () => { fillAds(); $('x').onclick = closeSheet; qa('.game').forEach(b => b.onclick = () => startGame(id, +b.dataset.g!)); $('kis').onclick = () => { if (tierOf(id) === 3) openKisah(id); else { sfx(220, .08); toast(t.kisahLock); } }; });
 }
 export function complete(id: string, gi: number) {
   const before = tierOf(id), beforeDone = doneCount();
@@ -52,7 +53,7 @@ function showStamp(id: string, tier: number, fresh: boolean, unlocked: any) {
 export function openKisah(id: string) {
   const st = STATIONS[id], k = st.kisah, t = L(), lg = save.lang; setRerender(() => openKisah(id));
   const [lon, lat] = st.coordinates; const maps = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
-  const offLabel = st.official.label ? st.official.label[lg] : t.official;
+  const off = st.official?.url ? `<a class="btn navy" href="${st.official.url}" target="_blank" rel="noopener">${st.official.label ? st.official.label[lg] : t.official}</a>` : '';
   const partner = st.partner ? `<a class="partner" href="${st.partner.url}" target="_blank" rel="noopener sponsored"><span>${t.partnerTag}</span><span>${esc(st.partner.label[lg])} ↗</span></a>` : `<div class="partner"><span>${t.partnerTag}</span><span>${t.partner}</span></div>`;
   openSheet(`<div class="row"><button type="button" class="back" id="bk">${ICON_BACK}${t.back}</button><button type="button" class="close" id="x" aria-label="${t.close}">${ICON_X}</button></div>
    <div class="kis"><div class="art"><img src="${sprite(id)}" alt="${esc(nm(id))}"></div><div class="kicker">${t.kisah} · ${esc(st.category[lg])}</div><h2 id="sheet-title">${esc(nm(id))}</h2>
@@ -60,11 +61,17 @@ export function openKisah(id: string) {
     <div class="box"><h3>${t.lookFor}</h3><ul style="margin-top:6px">${k.look[lg].map(f => `<li>${esc(f)}</li>`).join('')}</ul></div>
     <div class="fb good"><b>${t.didYou}</b> ${esc(k.fun[lg])}</div>
     <div class="kicker" style="color:#12384a">${t.visit}</div>
-    <div class="links"><a class="btn navy" href="${st.official.url}" target="_blank" rel="noopener">${offLabel}</a><a class="btn ghost" href="${maps}" target="_blank" rel="noopener">${t.maps}</a></div>
-    ${partner}<div class="src"><b>${t.sources}:</b> ${k.src.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join(' · ')}</div></div>`,
-    () => { $('x').onclick = closeSheet; $('bk').onclick = () => openStation(id); });
+    <div class="links">${off}<a class="btn ghost" href="${maps}" target="_blank" rel="noopener">${t.maps}</a></div>
+    ${partner}${adSlot('kisah')}<div class="src"><b>${t.sources}:</b> ${k.src.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join(' · ')}</div></div>`,
+    () => { fillAds(); $('x').onclick = closeSheet; $('bk').onclick = () => openStation(id); });
 }
-const rankName = () => { const n = doneCount(), t = L(); return t.ranks[n >= 15 ? 3 : n >= 9 ? 2 : n >= 3 ? 1 : 0]; };
+/* zone badge: Heritage Hunter, earned when every station in the zone is gold */
+function badgeCard() {
+  const t = L(), gold = IDS.filter(i => tierOf(i) === 3).length, on = gold === IDS.length;
+  return `<div class="badge ${on ? 'on' : ''}" role="group" aria-label="${esc(t.badge)}"><svg aria-hidden="true" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="${on ? '#e2a93f' : '#d9cfb8'}"/><circle cx="24" cy="24" r="17" fill="none" stroke="#fffaf0" stroke-width="2" stroke-dasharray="3 3"/><path d="M24 11l3.8 8 8.7 1-6.4 6 1.7 8.6L24 30.4l-7.8 4.2 1.7-8.6-6.4-6 8.7-1z" fill="${on ? '#fffaf0' : '#b9ad90'}"/></svg>
+    <div><b>${esc(t.badge)}</b><div class="small">${on ? esc(t.badgeSub) : esc(t.badgeHow)} · ${t.badgeProg(gold, IDS.length)}</div></div></div>`;
+}
+const rankName = () => { const n = doneCount(), t = L(); return t.ranks[n >= TOTAL ? 3 : n >= TOTAL / 2 ? 2 : n >= 3 ? 1 : 0]; };
 export function openPassport() {
   const t = L(), n = doneCount(); setRerender(openPassport);
   const cells = IDS.map(id => { const tr = tierOf(id); return `<button type="button" class="st t${tr}" data-id="${id}"><span class="c"><img src="${sprite(id, !tr)}" alt=""></span><span>${esc(nm(id))}</span><span class="small">${t.tiers[tr]}</span></button>`; }).join('');
@@ -72,10 +79,10 @@ export function openPassport() {
    <div class="row"><canvas id="pv" width="80" height="100" style="width:64px;height:80px;border-radius:14px;background:#e9dcbd"></canvas>
     <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:900"><span>${rankName()} · ${esc(ZONE.name[save.lang])}</span><span>${t.stamps(n, TOTAL)}</span></div>
     <div class="bar"><i style="width:${n / TOTAL * 100}%"></i></div><div class="small">${t.cats}: ${t.catsTxt(save.cats.length, ZONE.cats.length)}</div></div></div>
-   <div class="grid3">${cells}</div><button type="button" class="btn navy" id="wd">${t.wardrobe}</button><div class="small">${t.note}</div>
-   <div id="rs"><button type="button" class="btn ghost" id="reset" style="width:100%">${t.reset}</button></div>`,
+   ${badgeCard()}<div class="grid3">${cells}</div><button type="button" class="btn navy" id="wd">${t.wardrobe}</button><div class="small">${t.note}</div>
+   <div id="rs"><button type="button" class="btn ghost" id="reset" style="width:100%">${t.reset}</button></div>${adSlot('pasport')}`,
     () => {
-      $('x').onclick = closeSheet; charPreview($('pv') as HTMLCanvasElement, save.look, save.outfit);
+      fillAds(); $('x').onclick = closeSheet; charPreview($('pv') as HTMLCanvasElement, save.look, save.outfit);
       qa('.st').forEach(b => b.onclick = () => { const id = b.dataset.id!; if (tierOf(id) === 3) openKisah(id); else openStation(id); });
       $('wd').onclick = openWardrobe;
       $('reset').onclick = () => {

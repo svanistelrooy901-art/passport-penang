@@ -24,7 +24,8 @@ sun.shadow.bias = -.0008; sun.shadow.normalBias = .6;
 scene.add(sun, sun.target);
 
 /* ---------- reveal shader ---------- */
-export const REV = { value: Array.from({ length: 8 }, () => new THREE.Vector3(-9999, -9999, 0)) };
+export const REV_MAX = 16; // one reveal circle per station in the zone (+ the start area)
+export const REV = { value: Array.from({ length: REV_MAX }, () => new THREE.Vector3(-9999, -9999, 0)) };
 export const REVN = { value: 0 };
 export const gradient = new THREE.DataTexture(new Uint8Array([80, 150, 205, 240]), 4, 1, THREE.RedFormat);
 gradient.minFilter = gradient.magFilter = THREE.NearestFilter; gradient.needsUpdate = true;
@@ -34,9 +35,9 @@ export function patch<T extends THREE.Material>(m: T, sat?: { value: number }): 
     sh.uniforms.uRev = REV; sh.uniforms.uRevN = REVN; if (sat) sh.uniforms.uSat = sat;
     sh.vertexShader = 'varying vec2 vRP;\n' + sh.vertexShader.replace('#include <project_vertex>',
       '#include <project_vertex>\n vec4 rp=vec4(transformed,1.0);\n#ifdef USE_INSTANCING\n rp=instanceMatrix*rp;\n#endif\n vRP=(modelMatrix*rp).xz;');
-    sh.fragmentShader = 'uniform vec3 uRev[8];uniform int uRevN;varying vec2 vRP;' + (sat ? 'uniform float uSat;' : '') + '\n' +
+    sh.fragmentShader = 'uniform vec3 uRev[16];uniform int uRevN;varying vec2 vRP;' + (sat ? 'uniform float uSat;' : '') + '\n' +
       sh.fragmentShader.replace('#include <dithering_fragment>',
-        '#include <dithering_fragment>\n float rm=0.0;\n for(int i=0;i<8;i++){ if(i>=uRevN) break; float d=distance(vRP,uRev[i].xy); rm=max(rm,1.0-smoothstep(uRev[i].z*0.7,uRev[i].z,d)); }\n' +
+        '#include <dithering_fragment>\n float rm=0.0;\n for(int i=0;i<16;i++){ if(i>=uRevN) break; float d=distance(vRP,uRev[i].xy); rm=max(rm,1.0-smoothstep(uRev[i].z*0.7,uRev[i].z,d)); }\n' +
         (sat ? ' rm=uSat;\n' : '') +
         ' vec3 c0=gl_FragColor.rgb; float gg=dot(c0,vec3(.299,.587,.114)); vec3 paper=mix(vec3(gg)*vec3(1.06,1.0,.88),vec3(.93,.9,.82),.28); gl_FragColor.rgb=mix(paper,c0,rm);');
   };

@@ -5,7 +5,7 @@ export type Txt = { bm: string; en: string };
 export interface Station {
   id: string; zone: string; order: number; coordinates: [number, number];
   name: Txt; category: Txt; blurb: Txt;
-  official: { url: string; label: Txt | null };
+  official: { url: string; label: Txt | null } | null;
   partner: { url: string; label: Txt } | null;
   games: any[];
   kisah: { intro: Txt; facts: { bm: string[]; en: string[] }; look: { bm: string[]; en: string[] }; fun: Txt; src: [string, string][] };

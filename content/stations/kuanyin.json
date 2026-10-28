@@ -1,0 +1,191 @@
+{
+ "id": "kuanyin",
+ "zone": "george-town",
+ "order": 6,
+ "coordinates": [
+  100.33879194,
+  5.41844389
+ ],
+ "name": {
+  "bm": "Tokong Dewi Kuan Yin",
+  "en": "Goddess of Mercy Temple"
+ },
+ "category": {
+  "bm": "Rumah ibadat",
+  "en": "Place of worship"
+ },
+ "blurb": {
+  "bm": "Ini rumah ibadat yang aktif: berpakaian sopan, bercakap perlahan dan hormati orang yang sedang beribadat.",
+  "en": "This is an active place of worship: dress modestly, keep your voice low and respect people at prayer."
+ },
+ "official": null,
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Naga di bumbung",
+     "en": "Dragons on the roof",
+     "spot": "dragons",
+     "pts": [
+      [
+       86,
+       39,
+       15
+      ],
+      [
+       141,
+       19,
+       15
+      ]
+     ]
+    },
+    {
+     "bm": "Tiang merah",
+     "en": "Red pillars",
+     "spot": "pillars",
+     "pts": [
+      [
+       95,
+       132,
+       9
+      ],
+      [
+       126,
+       119,
+       9
+      ],
+      [
+       155,
+       106,
+       9
+      ],
+      [
+       182,
+       94,
+       9
+      ]
+     ]
+    },
+    {
+     "bm": "Tempat colok",
+     "en": "Incense burner",
+     "spot": "urn",
+     "pts": [
+      [
+       165,
+       145,
+       13
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz tahun",
+    "en": "Year quiz"
+   },
+   "ask": {
+    "bm": "Tokong ini dibina pada tahun…",
+    "en": "This temple was built in…"
+   },
+   "opts": [
+    {
+     "bm": "1800",
+     "en": "1800",
+     "ok": 1
+    },
+    {
+     "bm": "1903",
+     "en": "1903"
+    },
+    {
+     "bm": "1957",
+     "en": "1957"
+    },
+    {
+     "bm": "2008",
+     "en": "2008"
+    }
+   ],
+   "why": {
+    "bm": "Ya! Ia dibina pada 1800 dan disebut tokong Cina tertua di negeri ini.",
+    "en": "Yes! It was built in 1800 and is called the oldest Chinese temple in the state."
+   }
+  },
+  {
+   "type": "order",
+   "title": {
+    "bm": "Garis masa",
+    "en": "Timeline"
+   },
+   "items": [
+    {
+     "bm": "1800 · Tokong dibina",
+     "en": "1800 · The temple is built"
+    },
+    {
+     "bm": "1824 · Kuan Yin menjadi dewi utama",
+     "en": "1824 · Guan Yin becomes the main deity"
+    },
+    {
+     "bm": "2008 · Sebahagian Tapak Warisan Dunia UNESCO",
+     "en": "2008 · Part of the UNESCO World Heritage Site"
+    }
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Tokong Kuan Yin (Kong Hock Keong) di Jalan Masjid Kapitan Keling ialah tokong Cina tertua di negeri ini.",
+   "en": "The Goddess of Mercy Temple (Kong Hock Keong) on Pitt Street is the oldest Chinese temple in the state."
+  },
+  "facts": {
+   "bm": [
+    "Ia dibina pada 1800 dengan kos 4,000 dolar Sepanyol.",
+    "Asalnya ia untuk dewi laut Mazu. Selepas diubah suai pada 1824, Kuan Yin menjadi dewi utama.",
+    "Dahulu ia menjadi tempat menyelesaikan pertikaian antara masyarakat Hokkien dan Kantonis.",
+    "Ia terselamat semasa Pulau Pinang dibom pada Disember 1941."
+   ],
+   "en": [
+    "It was built in 1800 at a cost of 4,000 Spanish dollars.",
+    "It was first dedicated to the sea goddess Mazu. After a renovation in 1824, Guan Yin became the main deity.",
+    "It once settled disputes between the Hokkien and Cantonese communities.",
+    "It survived the bombing of Penang in December 1941."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Patung naga di sepanjang bumbung",
+    "Tiang yang dililit naga",
+    "Pintu besar yang dilukis dengan dewa-dewi"
+   ],
+   "en": [
+    "Dragon figures along the roof",
+    "Pillars wrapped with dragons",
+    "Huge doors painted with deities"
+   ]
+  },
+  "fun": {
+   "bm": "Tokong ini dibina mengikut feng shui dan mempunyai tiga perigi.",
+   "en": "The temple was built by feng shui principles and has three wells."
+  },
+  "src": [
+   [
+    "Wikipedia: Goddess of Mercy Temple",
+    "https://en.wikipedia.org/wiki/Goddess_of_Mercy_Temple"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-28",
+ "review": {
+  "owner": "pending"
+ }
+}

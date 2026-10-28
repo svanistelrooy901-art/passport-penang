@@ -1,0 +1,186 @@
+{
+ "id": "peranakan",
+ "zone": "george-town",
+ "order": 5,
+ "coordinates": [
+  100.341192,
+  5.417999
+ ],
+ "name": {
+  "bm": "Rumah Agam Peranakan Pinang",
+  "en": "Pinang Peranakan Mansion"
+ },
+ "category": {
+  "bm": "Muzium",
+  "en": "Museum"
+ },
+ "blurb": {
+  "bm": "Rumah agam hijau di Lebuh Gereja, penuh barang antik Baba Nyonya.",
+  "en": "A green mansion on Church Street, full of Baba Nyonya antiques."
+ },
+ "official": {
+  "url": "https://www.malaysia.travel/explore/pinang-peranakan-mansion",
+  "label": {
+   "bm": "Info pelancongan ↗",
+   "en": "Tourism info ↗"
+  }
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Pintu besar",
+     "en": "Grand doorway",
+     "spot": "door",
+     "pts": [
+      [
+       140,
+       112,
+       13
+      ]
+     ]
+    },
+    {
+     "bm": "Balkoni",
+     "en": "Balcony",
+     "spot": "balcony",
+     "pts": [
+      [
+       148,
+       102,
+       16
+      ]
+     ]
+    },
+    {
+     "bm": "Tanglung",
+     "en": "Lanterns",
+     "spot": "lanterns",
+     "pts": [
+      [
+       131,
+       117,
+       9
+      ],
+      [
+       160,
+       104,
+       9
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz pemilik",
+    "en": "Owner quiz"
+   },
+   "ask": {
+    "bm": "Siapa yang membina rumah agam ini?",
+    "en": "Who built this mansion?"
+   },
+   "opts": [
+    {
+     "bm": "Chung Keng Quee",
+     "en": "Chung Keng Quee",
+     "ok": 1
+    },
+    {
+     "bm": "Cheong Fatt Tze",
+     "en": "Cheong Fatt Tze"
+    },
+    {
+     "bm": "Francis Light",
+     "en": "Francis Light"
+    },
+    {
+     "bm": "Sun Yat-sen",
+     "en": "Sun Yat-sen"
+    }
+   ],
+   "why": {
+    "bm": "Betul! Chung Keng Quee, Kapitan Cina Perak, menjadikannya rumah dan pejabatnya.",
+    "en": "Right! Chung Keng Quee, Kapitan Cina of Perak, made it his home and office."
+   }
+  },
+  {
+   "type": "order",
+   "title": {
+    "bm": "Garis masa",
+    "en": "Timeline"
+   },
+   "items": [
+    {
+     "bm": "1893 · Tanah dibeli",
+     "en": "1893 · The land is bought"
+    },
+    {
+     "bm": "1990-an · Menjadi muzium",
+     "en": "1990s · It becomes a museum"
+    },
+    {
+     "bm": "2008 · Sebahagian Tapak Warisan Dunia UNESCO",
+     "en": "2008 · Part of the UNESCO World Heritage Site"
+    }
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Rumah agam ini dibina untuk Chung Keng Quee, salah seorang yang terkaya di Pulau Pinang pada akhir 1800-an.",
+   "en": "This mansion was built for Chung Keng Quee, one of Penang's richest men in the late 1800s."
+  },
+  "facts": {
+   "bm": [
+    "Chung Keng Quee membeli tanah ini pada 1893 dan menjadikan rumah agam ini rumah serta pejabatnya.",
+    "Dahulu ia dikenali sebagai Hai Kee Chan.",
+    "Ia dibuka sebagai muzium pada 1990-an dengan lebih 1,000 barang antik Peranakan.",
+    "Asalnya ia dicat putih. Kini ia berwarna hijau."
+   ],
+   "en": [
+    "Chung Keng Quee bought the land in 1893 and made the mansion his home and office.",
+    "It was once known as Hai Kee Chan.",
+    "It opened as a museum in the 1990s with over 1,000 Peranakan antiques.",
+    "It was first painted white. Today it is green."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Dinding luar berwarna hijau",
+    "Barang antik Peranakan",
+    "Tokong kecil di sebelah dengan patung Chung Keng Quee"
+   ],
+   "en": [
+    "The green outer walls",
+    "Peranakan antiques",
+    "The small temple next door with a statue of Chung Keng Quee"
+   ]
+  },
+  "fun": {
+   "bm": "Rumah agam ini muncul dalam drama The Little Nyonya.",
+   "en": "The mansion appeared in the drama The Little Nyonya."
+  },
+  "src": [
+   [
+    "Wikipedia: Pinang Peranakan Mansion",
+    "https://en.wikipedia.org/wiki/Pinang_Peranakan_Mansion"
+   ],
+   [
+    "Tourism Malaysia: Pinang Peranakan Mansion",
+    "https://www.malaysia.travel/explore/pinang-peranakan-mansion"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-28",
+ "review": {
+  "owner": "pending"
+ }
+}

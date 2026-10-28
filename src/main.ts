@@ -5,18 +5,24 @@ import { ZONE, IDS, zoneAsset } from './content';
 import { save, persist } from './game/save';
 import { flags, player, npcs, keysDown, hooks } from './game/state';
 import { goTo, stepActor, stepKeys, stepNpc } from './game/actors';
-import { renderer, scene, camera, cv, view, camS, ZOOM, MOBILE, updateCamera, resize, loadTex } from './engine/core';
+import { renderer, scene, camera, cv, view, camS, ZOOM, MOBILE, updateCamera, resize, loadTex, applyQuality, fitShadow, quality, type QualityName } from './engine/core';
 import { loadGrid, nearestWalkable, CELL } from './engine/pathfinding';
-import { buildWorld, updateWorld, updateLabels, uploadReveal, syncReveal, rebuildPlayer, reveals, revState, landmarkGroups, catMeshes } from './engine/world';
+import { buildWorld, updateWorld, updateLabels, uploadReveal, syncReveal, rebuildPlayer, reveals, revState, landmarkGroups, catMeshes, motion } from './engine/world';
 import { SAT } from './engine/stations';
 import { $, initHud, updateHud, refreshText, toast, act } from './ui/hud';
 import { initSheet, closeSheet } from './ui/dom';
 import { openStation, openPassport } from './ui/sheets';
 import { renderIntro, updateLoading, progress, startPlaying, shouldAutoStart } from './ui/intro';
-import { sfx } from './audio';
+import { sfx, applyAudio } from './audio';
+import { openSettings } from './ui/settings';
+import { tutorialTick, tutorialEvent, setTutorialOrigin, renderTutorial } from './ui/tutorial';
+import { reducedMotion } from './game/save';
 import { L } from './i18n';
 
-hooks.openStation = openStation; hooks.refreshText = refreshText; hooks.toast = toast; hooks.sfx = sfx;
+hooks.openStation = openStation; hooks.toast = toast; hooks.sfx = sfx; hooks.tutorial = tutorialEvent;
+hooks.applySettings = applySettings;
+hooks.restartTutorial = () => { setTutorialOrigin(); renderTutorial(); };
+hooks.onStart = () => { applySettings(); setTutorialOrigin(); };
 hooks.rebuildPlayer = () => { if (flags.ready) rebuildPlayer(); };
 hooks.startReveal = r => reveals.push(r);
 hooks.resetWorld = () => { syncReveal(); catMeshes.forEach(m => m.visible = true); rebuildPlayer(); spawn(); };
@@ -28,15 +34,20 @@ function spawn() {
 }
 
 /* ---------- frame loop ---------- */
-const RM = matchMedia('(prefers-reduced-motion: reduce)');
-const qa = { n: 0, t: 0, level: 0 };
+/* graphics: an explicit choice is kept; 'auto' starts medium (phones) / high (desktop) and steps down if the frame rate drops */
+const LEVELS: QualityName[] = ['low', 'medium', 'high'];
+const qa = { n: 0, t: 0, auto: (MOBILE ? 'medium' : 'high') as QualityName };
+function applySettings() {
+  const q = save.settings.quality === 'auto' ? qa.auto : save.settings.quality; if (q !== quality.name || !flags.ready) applyQuality(q);
+  motion.reduced = reducedMotion(); if (flags.running) applyAudio(); refreshText();
+}
 let last = performance.now(); const T0 = last;
 function frame(now: number) {
   const dt = Math.min(.05, (now - last) / 1000); last = now; const t = (now - T0) / 1000;
   if (flags.running && !flags.modalOpen) { if (!stepKeys(dt)) stepActor(player, dt); }
   for (const n of npcs) { stepNpc(n, dt); if (n.bubble > 0) n.bubble -= dt * .25; }
   for (let i = reveals.length - 1; i >= 0; i--) {
-    const r = reveals[i]; r.r = Math.min(r.target, r.r + dt * (RM.matches ? 4000 : 480)); revState[r.id] = r.r;
+    const r = reveals[i]; r.r = Math.min(r.target, r.r + dt * (motion.reduced ? 4000 : 480)); revState[r.id] = r.r;
     const k = (r.r - r.r0) / ((r.target - r.r0) || 1); if (SAT[r.id]) SAT[r.id].u.value = .38 + (r.fromF + (r.toF - r.fromF) * k) * .62;
     if (r.r >= r.target) reveals.splice(i, 1);
   }
@@ -47,19 +58,17 @@ function frame(now: number) {
       toast(save.cats.length === ZONE.cats.length ? L().catAll : L().catFound(save.cats.length, ZONE.cats.length)); refreshText();
     }
   });
-  updateWorld(dt, t); updateCamera(dt); renderer.render(scene, camera); updateLabels();
+  updateWorld(dt, t); updateCamera(motion.reduced ? 1 : dt); fitShadow(); renderer.render(scene, camera); updateLabels();
   if (flags.running) {
-    updateHud();
+    updateHud(); tutorialTick();
     qa.n++; qa.t += dt;
-    if (qa.t > 3) { const fps = qa.n / qa.t; qa.n = 0; qa.t = 0; if (fps < 24 && qa.level < 2) degrade(++qa.level); }
+    if (qa.t > 3) {
+      const fps = qa.n / qa.t; qa.n = 0; qa.t = 0;
+      if (fps < 24 && save.settings.quality === 'auto' && qa.auto !== 'low') { qa.auto = LEVELS[LEVELS.indexOf(qa.auto) - 1]; applyQuality(qa.auto); }
+    }
   }
   if (player.intent && !player.path.length && !flags.modalOpen) { const id = player.intent; player.intent = null; openStation(id); }
   requestAnimationFrame(frame);
-}
-/* adaptive quality: lower resolution first, then drop shadows */
-function degrade(level: number) {
-  if (level === 1) { renderer.setPixelRatio(1); resize(); }
-  else { renderer.shadowMap.enabled = false; scene.traverse((o: any) => { if (o.material) [].concat(o.material).forEach((m: any) => m.needsUpdate = true); }); }
 }
 
 /* ---------- input ---------- */
@@ -114,6 +123,7 @@ function initInput() {
   window.addEventListener('keyup', e => { keysDown.delete(e.key.length === 1 ? e.key.toLowerCase() : e.key); });
   window.addEventListener('blur', () => keysDown.clear());
   $('btn-pass').onclick = () => { if (flags.running) openPassport(); };
+  $('btn-set').onclick = () => { if (flags.running) openSettings(); };
   $('btn-cats').onclick = () => { if (flags.running) toast(save.cats.length === ZONE.cats.length ? L().catAll : L().catsHelp + ' (' + save.cats.length + '/' + ZONE.cats.length + ')'); };
 }
 
@@ -125,10 +135,10 @@ async function boot() {
   initHud(); initSheet(); initInput(); refreshText(); renderIntro();
   progress.total = 3; const tick = () => { progress.loaded++; updateLoading(); };
   const [walk, ground, sea] = await Promise.all([loadImg(zoneAsset('walk.png')).then(i => (tick(), i)), loadTex(zoneAsset('ground.webp')).then(t => (tick(), t)), loadTex(zoneAsset('sea.webp')).then(t => (tick(), t))]);
-  loadGrid(walk); spawn(); buildWorld(ground!, sea!);
+  loadGrid(walk); spawn(); buildWorld(ground!, sea!); applySettings();
   flags.ready = true; renderIntro();
   if (shouldAutoStart()) startPlaying();
-  if (location.hash === '#test') (window as any).__pp = { openStation, save: () => save, camS, player, syncReveal, revState, SAT, MOBILE };
+  if (location.hash === '#test') (window as any).__pp = { openStation, save: () => save, camS, player, syncReveal, revState, SAT, MOBILE, quality, calls: () => renderer.info.render.calls, tris: () => renderer.info.render.triangles };
   requestAnimationFrame(t => { last = t; frame(t); });
 }
 boot().catch(err => { console.error(err); const b = document.getElementById('start'); if (b) b.textContent = 'Ralat memuatkan · Load error'; });

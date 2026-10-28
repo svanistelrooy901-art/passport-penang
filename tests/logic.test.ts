@@ -20,3 +20,19 @@ describe('pathfinding', async () => {
     const g = new Uint8Array(100); g[55] = 1; pf.setGrid(g); expect(pf.nearestWalkable(2, 2)).toEqual([5, 5]);
   });
 });
+describe('settings & tutorial save migration', async () => {
+  const { normalise, TUTORIAL_DONE, defaultSettings } = await import('../src/game/save');
+  it('fills default settings for a Phase 0 save and skips the tutorial for returning players', () => {
+    const s = normalise({ v: 1, games: { a: [1, 0, 0] }, created: true, lang: 'en' });
+    expect(s.settings).toEqual(defaultSettings()); expect(s.tutorial).toBe(TUTORIAL_DONE); expect(s.games.b).toEqual([0, 0, 0]);
+  });
+  it('starts the tutorial for brand-new players', () => { expect(normalise(null).tutorial).toBe(0); expect(normalise({ v: 1, created: false }).tutorial).toBe(0); });
+  it('keeps chosen settings and rejects unknown quality', () => {
+    const s = normalise({ v: 1, created: true, tutorial: 2, settings: { music: false, quality: 'ultra' } });
+    expect(s.settings.music).toBe(false); expect(s.settings.sound).toBe(true); expect(s.settings.quality).toBe('auto'); expect(s.tutorial).toBe(2);
+  });
+});
+describe('music', async () => {
+  const { _test } = await import('../src/audio');
+  it('melody stays inside the pentatonic scale', () => { for (const n of _test.MEL) expect(n === -1 || (n >= 0 && n < _test.SCALE.length)).toBe(true); });
+});

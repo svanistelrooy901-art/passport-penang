@@ -32,7 +32,15 @@ const T: Record<'bm' | 'en', any> = {
   soon:'AKAN DATANG',bus:'Hentian bas Komtar',busTxt:'Bas ke Bukit Bendera · Zon 2 akan datang.',
   ferry:'Jeti feri',ferryTxt:'Feri ke Butterworth · Zon 3 akan datang.',view:'Lihat',talk:'Sembang',close:'Tutup',back:'Kembali',
   note:'Prototaip: susun atur jalan adalah ilustrasi, bukan peta navigasi. Waktu buka & harga: semak laman rasmi.',
-  newOutfit:n=>`Pakaian baru dibuka: ${n}! Buka Pasport › Almari.`},
+  newOutfit:n=>`Pakaian baru dibuka: ${n}! Buka Pasport › Almari.`,
+  settings:'Tetapan',sound:'Bunyi & suasana',music:'Muzik',graphics:'Grafik',lang:'Bahasa',
+  qual:{auto:'Auto',low:'Rendah',medium:'Sederhana',high:'Tinggi'},qualHint:'Pilih Rendah jika telefon terasa perlahan.',
+  motion:'Kurangkan gerakan',motionHint:'Kurangkan animasi air, kamera dan pendedahan peta.',on:'Hidup',off:'Tutup',
+  replayTut:'Main semula tutorial',about:'Tentang',aboutTxt:'Data pantai, jambatan dan laluan feri © penyumbang OpenStreetMap (ODbL). Susun atur jalan dan bangunan ialah ilustrasi, bukan peta navigasi. Muzik dan bunyi dicipta khas untuk permainan ini.',
+  version:'Versi',controls:'Kawalan',controlsTxt:'Ketik untuk jalan · seret untuk lihat · cubit atau ± untuk zum · ⟲ ⟳ untuk pusing. Papan kekunci: anak panah/WASD, Q/R pusing, E main, Esc tutup.',
+  tut:['Ketik di mana-mana di jalan untuk berjalan.','Ikut anak panah merah. Ia tunjuk stesen seterusnya: {n}.','Buka stesen dan main permainan pertama.','Hebat! Setem pertama. Peta mula berwarna. Main 3 permainan untuk setem emas dan kisah penuh.'],
+  tutCam:'Seret untuk melihat sekeliling, cubit untuk zum.',tutSkip:'Langkau',tutOk:'Faham!',tutStep:(a,b)=>`Langkah ${a} / ${b}`,
+  canvas:'Peta 3D George Town. Ketik untuk berjalan.'},
  en:{zone:'ZONE 1',pass:'Passport',start:'Start exploring',loading:'Loading the map…',
   ik:'PASPORT PENANG · PROTOTYPE',ih:'Wander <span>George Town</span>',
   ip:'Walk to each station, play 3 games and collect bronze, silver and gold stamps. A gold stamp unlocks the full story of that place.',
@@ -64,7 +72,15 @@ const T: Record<'bm' | 'en', any> = {
   soon:'COMING SOON',bus:'Komtar bus stop',busTxt:'Bus to Penang Hill · Zone 2 coming soon.',
   ferry:'Ferry jetty',ferryTxt:'Ferry to Butterworth · Zone 3 coming soon.',view:'View',talk:'Chat',close:'Close',back:'Back',
   note:'Prototype: street layout is illustrative, not a navigation map. Opening hours & prices: check the official site.',
-  newOutfit:n=>`New outfit unlocked: ${n}! Open Passport › Wardrobe.`}
+  newOutfit:n=>`New outfit unlocked: ${n}! Open Passport › Wardrobe.`,
+  settings:'Settings',sound:'Sound & ambience',music:'Music',graphics:'Graphics',lang:'Language',
+  qual:{auto:'Auto',low:'Low',medium:'Medium',high:'High'},qualHint:'Choose Low if your phone feels slow.',
+  motion:'Reduce motion',motionHint:'Less water, camera and map-reveal animation.',on:'On',off:'Off',
+  replayTut:'Replay tutorial',about:'About',aboutTxt:'Coastline, bridge and ferry data © OpenStreetMap contributors (ODbL). Street layout and buildings are illustrations, not a navigation map. Music and sounds are made for this game.',
+  version:'Version',controls:'Controls',controlsTxt:'Tap to walk · drag to look around · pinch or ± to zoom · ⟲ ⟳ to rotate. Keyboard: arrows/WASD, Q/R rotate, E play, Esc close.',
+  tut:['Tap anywhere on the street to walk.','Follow the red arrow. It points to your next station: {n}.','Open the station and play the first game.','Great! Your first stamp. The map is filling with colour. Play all 3 games for a gold stamp and the full story.'],
+  tutCam:'Drag to look around, pinch to zoom.',tutSkip:'Skip',tutOk:'Got it!',tutStep:(a,b)=>`Step ${a} of ${b}`,
+  canvas:'3D map of George Town. Tap to walk.'}
 };
 export type Lang = 'bm' | 'en';
 export const L = () => T[save.lang as Lang];

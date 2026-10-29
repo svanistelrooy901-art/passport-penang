@@ -17,7 +17,7 @@ import { sfx, applyAudio } from './audio';
 import { openSettings } from './ui/settings';
 import { tutorialTick, tutorialEvent, setTutorialOrigin, renderTutorial } from './ui/tutorial';
 import { reducedMotion } from './game/save';
-import { openTravel, goMap, travelTo } from './ui/travel';
+import { openTravel, openTravelAll, goMap, travelTo } from './ui/travel';
 import { exitPoint } from './engine/world';
 import { zoneName } from './game/zones';
 import { bootMap } from './overworld';
@@ -133,6 +133,7 @@ function initInput() {
   $('btn-set').onclick = () => { if (flags.running) openSettings(); };
   $('btn-cats').onclick = () => { const n = catsIn(ZONE_ID).length; if (flags.running) toast(n === ZONE.cats.length ? L().catAll : L().catsHelp + ' (' + n + '/' + ZONE.cats.length + ')'); };
   $('btn-map').onclick = () => { if (flags.running && !flags.modalOpen) goMap(); };
+  $('btn-travel').onclick = () => { if (flags.running && !flags.modalOpen) openTravelAll(); };
   // audio needs a gesture after every page load (travel reloads the page)
   const unlockAudio = () => { if (flags.running) { applyAudio(); window.removeEventListener('pointerdown', unlockAudio); } }; window.addEventListener('pointerdown', unlockAudio);
 }

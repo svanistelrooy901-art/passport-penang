@@ -24,6 +24,17 @@ export function openTravel(exitIndex: number) {
       qa('.dest').forEach(b => b.onclick = () => { const d = b.dataset.dest!; if (zoneState(d) !== 'open') { sfx(220, .08); return; } travelTo(d, ex.kind); });
     });
 }
+/* the travel button: every other zone, from anywhere in play (the bus stop and jetty stay the everyday way) */
+export function openTravelAll() {
+  const t = L(); setRerender(() => openTravelAll());
+  const others = OVERWORLD.zones.filter(z => z.id !== ZONE_ID);
+  openSheet(`<div class="row"><div><div class="kicker">${t.travelK}</div><h2 id="sheet-title">${t.travelTitle}</h2></div><button type="button" class="close" id="x" aria-label="${t.close}">${ICON_X}</button></div>
+    <p class="small">${t.travelAll}</p>${others.map(z => destRow(z.id)).join('')}<button type="button" class="btn ghost" id="tmap">${t.travelMap}</button>`,
+    () => {
+      $('x').onclick = closeSheet; $('tmap').onclick = () => goMap();
+      qa('.dest').forEach(b => b.onclick = () => { const d = b.dataset.dest!; if (zoneState(d) !== 'open') { sfx(220, .08); return; } travelTo(d); });
+    });
+}
 export function goMap() { closeSheet(); navigate('map'); }
 
 /* travel animation drawn on a small SVG of Penang (same approved outlines as the overworld) */

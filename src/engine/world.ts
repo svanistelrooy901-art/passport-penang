@@ -1,7 +1,7 @@
 /* Zone world: raised diorama island from the approved coastline, instanced shophouses and trees,
    station models, cats, ferry, signposts, DOM labels and the reveal state. */
 import * as THREE from 'three';
-import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline, view } from './core';
+import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline, view, focus } from './core';
 import { bakeDeep, bakeChildren, disposeTree } from './bake';
 import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT, stationMat } from './stations';
 import { makeChar, poseChar, faceTo } from './character';
@@ -33,9 +33,9 @@ roofTileTex.repeat.set(1, 3);
 
 function buildIsland(groundT: THREE.Texture, seaT: THREE.Texture) {
   const W = W3.w, H = W3.h;
-  const deep = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.MeshLambertMaterial({ color: '#2a8fab' })); deep.rotation.x = -Math.PI / 2; deep.position.set(W / 2, -9, H / 2); deep.receiveShadow = true; scene.add(deep);
+  const deep = new THREE.Mesh(new THREE.PlaneGeometry(300000, 300000), new THREE.MeshLambertMaterial({ color: '#2a8fab' })); deep.rotation.x = -Math.PI / 2; deep.position.set(W / 2, -9, H / 2); deep.receiveShadow = true; scene.add(deep);
   const seaP = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshLambertMaterial({ map: seaT })); seaP.rotation.x = -Math.PI / 2; seaP.position.set(W / 2, -8.8, H / 2); seaP.receiveShadow = true; scene.add(seaP);
-  waterFx = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.ShaderMaterial({
+  waterFx = new THREE.Mesh(new THREE.PlaneGeometry(300000, 300000), new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, uniforms: { t: { value: 0 } },
     vertexShader: 'varying vec2 vP;void main(){vec4 w=modelMatrix*vec4(position,1.0);vP=w.xz;gl_Position=projectionMatrix*viewMatrix*w;}',
     fragmentShader: 'uniform float t;varying vec2 vP;void main(){float a=sin(vP.x*.045+t*1.3+sin(vP.y*.03+t*.7)*2.0)*sin(vP.y*.06-t*1.1);float l=smoothstep(.86,.97,a);gl_FragColor=vec4(1.0,1.0,1.0,l*.32);}',
@@ -51,11 +51,26 @@ function buildIsland(groundT: THREE.Texture, seaT: THREE.Texture) {
     for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / W, 1 - pos.getZ(i) / H);
     const m = new THREE.Mesh(g, [groundMat, side]); m.receiveShadow = true; scene.add(m);
   }
-  // the rest of Penang: flat and pale just below the island's top, so it reads as land beyond this zone
-  // (faded on purpose; walking there is not possible, the exits and bus or ferry stops carry you across)
-  const haze = hazeMat = new THREE.MeshBasicMaterial({ color: HAZE_LOCK, transparent: true, opacity: .85, depthWrite: false, side: THREE.DoubleSide });
-  const shapes = (W3.land || []).map((ring: number[][]) => { const g = new THREE.ShapeGeometry(new THREE.Shape(ring.map(p => new THREE.Vector2(p[0], p[1])))); g.rotateX(Math.PI / 2); return g; });
-  if (shapes.length) { const m = new THREE.Mesh(mergeGeometries(shapes), haze); m.position.y = -.6; m.renderOrder = -1; scene.add(m); }
+  // the rest of Penang: solid land slabs (grey while George Town is locked, green once another zone opens),
+  // so the sea never shows through or under them
+  const topM = hazeMat = new THREE.MeshBasicMaterial({ color: HAZE_LOCK }), sideM = new THREE.MeshBasicMaterial({ color: '#7f857c' });
+  const slabs = (W3.land || []).map((ring: number[][]) => {
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(ring.map(p => new THREE.Vector2(p[0], p[1]))), { depth: 14, bevelEnabled: false, curveSegments: 1 });
+    g.rotateX(Math.PI / 2); g.translate(0, -.6, 0); return g;
+  });
+  if (slabs.length) scene.add(new THREE.Mesh(mergeGeometries(slabs, true), [topM, sideM]));
+  // the zone's edge where it meets land: a gold line that marks where this zone stops
+  const edges: THREE.BufferGeometry[] = [];
+  for (const run of W3.border || []) for (let i = 0; i < run.length - 1; i++) {
+    const [x0, z0] = run[i], [x1, z1] = run[i + 1], len = Math.hypot(x1 - x0, z1 - z0); if (len < .5) continue;
+    const b = new THREE.BoxGeometry(len + 4, 14, 22); b.rotateY(-Math.atan2(z1 - z0, x1 - x0)); b.translate((x0 + x1) / 2, 7, (z0 + z1) / 2); edges.push(b);
+  }
+  if (edges.length) scene.add(new THREE.Mesh(mergeGeometries(edges), new THREE.MeshBasicMaterial({ color: '#f3c46a' })));
+  // the middle of the whole state (for the far zoom-out)
+  const all = (W3.land || []).flat(); if (all.length) {
+    const xs = all.map((p: number[]) => p[0]), ys = all.map((p: number[]) => p[1]);
+    focus.x = (Math.min(...xs) + Math.max(...xs)) / 2; focus.z = (Math.min(...ys) + Math.max(...ys)) / 2; focus.on = true;
+  }
   const plank = mat('#a27a4f');
   for (const poly of W3.decks) {
     const shape = new THREE.Shape(poly.map((p: number[]) => new THREE.Vector2(p[0], p[1])));

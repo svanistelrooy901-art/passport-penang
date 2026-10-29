@@ -393,7 +393,26 @@ land = neighbour_land()
 # the other zones, as areas on the land beyond this one (names and places from content/overworld.json)
 areas = [{'id': z['id'], 'name': z['name'], 'at': [round(v, 1) for v in P(*z['lonlat'])]}
          for z in json.load(open(f'{REPO}/content/overworld.json'))['zones'] if z['id'] != 'george-town']
-json.dump({'w': W, 'h': H, 'angle': ang, 'coast': polys, 'decks': decks, 'houses': houses, 'trees': trees, 'land': land, 'areas': areas}, open(f'{REPO}/content/zones/george-town.world3d.json', 'w'), separators=(',', ':'))
+# the zone's edge (its frame) where it runs over land: a visible border line, drawn only on land
+def on_land(x, y):
+    for r in land:
+        c = False; j = len(r) - 1
+        for i in range(len(r)):
+            xi, yi = r[i]; xj, yj = r[j]
+            if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi) + xi: c = not c
+            j = i
+        if c: return True
+    return False
+per = [(t, 0) for t in np.arange(0, W, 14)] + [(W, t) for t in np.arange(0, H, 14)] + [(W - t, H) for t in np.arange(0, W, 14)] + [(0, H - t) for t in np.arange(0, H, 14)]
+runs, cur = [], []
+for x, y in per:
+    x, y = float(x), float(y)
+    if on_land(x, y): cur.append([round(x, 1), round(y, 1)])
+    elif cur: runs.append(cur); cur = []
+if cur: runs.append(cur)
+border = [r for r in runs if len(r) > 1]
+print('border runs', len(border), [len(r) for r in border])
+json.dump({'w': W, 'h': H, 'angle': ang, 'coast': polys, 'decks': decks, 'houses': houses, 'trees': trees, 'land': land, 'areas': areas, 'border': border}, open(f'{REPO}/content/zones/george-town.world3d.json', 'w'), separators=(',', ':'))
 print('neighbour land rings', len(land), [len(r) for r in land][:8], 'areas', [a['id'] for a in areas])
 print('houses', len(houses), 'trees', len(trees), 'coast', [len(p) for p in polys], 'decks', len(decks))
 

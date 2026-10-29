@@ -12,8 +12,10 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadow
 
 export const scene = new THREE.Scene();
 scene.background = new THREE.Color('#cfe8e2');
-scene.fog = new THREE.Fog('#d7ebe3', 2600, 9000); // far land (the rest of Penang) fades into this haze
-export const camera = new THREE.PerspectiveCamera(32, 1, 5, 14000);
+scene.fog = new THREE.Fog('#d7ebe3', 14000, 90000); // only the furthest zoom-outs fade into the haze
+export const camera = new THREE.PerspectiveCamera(32, 1, 60, 120000);
+/* where the view drifts when zoomed far out: the middle of the whole state (set by the zone world) */
+export const focus = { x: 0, z: 0, on: false };
 const PI = Math.PI; // r155+ uses physical light units; scale to match the approved prototype look
 export const hemi = new THREE.HemisphereLight('#fff0d6', '#5c837d', .52 * PI); scene.add(hemi);
 export const sun = new THREE.DirectionalLight('#ffd9a8', 1.0 * PI);
@@ -80,11 +82,12 @@ export function canvasTex(w: number, h: number, draw: (g: CanvasRenderingContext
 
 /* ---------- camera rig ---------- */
 export const camS = { tx: player.x, tz: player.y, yaw: 0, yawT: 0, dist: 1250, distT: 1250, pitch: .95, panX: 0, panZ: 0 };
-export const ZOOM = { min: 280, max: 7000 };
+export const ZOOM = { min: 280, max: 40000 };
 export function updateCamera(dt: number) {
   const k = Math.min(1, dt * 7);
   camS.yaw += (camS.yawT - camS.yaw) * k; camS.dist += (camS.distT - camS.dist) * k;
-  const tx = player.x + camS.panX, tz = player.y + camS.panZ, f = Math.min(1, dt * 6);
+  const wf = focus.on ? Math.min(1, Math.max(0, (camS.dist - 4000) / 12000)) : 0; // far out, look at the whole state
+  const tx = player.x + camS.panX + (focus.x - player.x) * wf, tz = player.y + camS.panZ + (focus.z - player.y) * wf, f = Math.min(1, dt * 6);
   camS.tx += (tx - camS.tx) * f; camS.tz += (tz - camS.tz) * f;
   const cp = Math.cos(camS.pitch), sp = Math.sin(camS.pitch);
   camera.position.set(camS.tx + Math.sin(camS.yaw) * cp * camS.dist, sp * camS.dist, camS.tz + Math.cos(camS.yaw) * cp * camS.dist);

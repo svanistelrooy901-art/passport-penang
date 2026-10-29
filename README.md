@@ -22,7 +22,7 @@ npm run test:e2e     # browser smoke test of dist/ (Chromium)
 | `content/` | Zones and stations as JSON (BM + EN), outfits |
 | `public/zones/<zone>/` | Baked ground/sea textures, walk grid, station artwork |
 | `data/geography/` | Approved explore-penang geography (read-only, hash-locked) |
-| `tools/` | `bake_zone.py` (layout, ground, buildings, walk grid from the approved coastline), `render_sprites.mjs` (station pictures from the 3D models), `stations_phase2.py` (Phase 2 station content) |
+| `tools/` | `bake_zone.py` (layout, ground, buildings, walk grid from the approved coastline), `import_sprites.py` (painted station pictures + find-game hotspots from `sprite_hotspots.json`), `render_sprites.mjs` (fallback pictures rendered from the 3D models), `stations_phase2.py` (Phase 2 station content) |
 | `docs/PHASES.md` | Delivery phases and QA checklists |
 
 Street layout, buildings and station models are interpretive game art, not a navigation map. The coastline, bridges, ferry route and destination coordinates come from the approved geography.

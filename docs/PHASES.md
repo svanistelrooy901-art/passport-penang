@@ -42,7 +42,7 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 ## Phase 2: George Town complete ← current
 - +7 stations, each with 3 games + a sourced Kisah: Armenian Street, Kapitan Keling Mosque, Sri Mahamariamman Temple, Goddess of Mercy Temple, Pinang Peranakan Mansion, Cheong Fatt Tze (Blue) Mansion, Esplanade & City Hall
 - Zone re-baked from the approved coastline by `tools/bake_zone.py` (no change to approved geography). The existing map already covers the whole heritage core, so it was not enlarged; instead the dense Pitt Street cluster is spread slightly (interpretive placement, directions links use real coordinates)
-- 3D models for the new stations; their UI sprites are rendered from the models (`tools/render_sprites.mjs`)
+- 3D models for the new stations; painted station pictures generated in the same style as the original five (`tools/import_sprites.py`)
 - More cats (12) and NPCs with local tips (6); Heritage Hunter badge card in the Pasport
 - AdSense placeholders on reading screens only: station sheet, Kisah page, Pasport (`src/ads.ts`)
 
@@ -50,7 +50,7 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 - [ ] Review every new fact, quiz answer and BM/EN translation (each station's Kisah lists its sources); mark `review.owner` approved or send corrections
 - [ ] Play all 12 stations to gold on a phone: games work, stamps, Kisah opens, directions link opens the right place
 - [ ] New models read well up close; the Pitt Street cluster (Kapitan Keling, Sri Mahamariamman, Kuan Yin, Armenian Street, Khoo Kongsi) is easy to tell apart
-- [ ] New station pictures (rendered from 3D) sit well next to the original five painted ones
+- [ ] New painted station pictures sit well next to the original five
 - [ ] Place-of-worship stations carry the respect note; tone is right
 - [ ] Ad placeholders appear only on the station sheet, Kisah and Pasport, never over the game
 - [ ] Cats (12) and the new NPC tips; Heritage Hunter badge shows progress in the Pasport

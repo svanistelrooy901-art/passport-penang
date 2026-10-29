@@ -39,7 +39,7 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 
 **Exit:** owner sign-off.
 
-## Phase 2: George Town complete ← current
+## Phase 2: George Town complete ✅ signed off
 - +7 stations, each with 3 games + a sourced Kisah: Armenian Street, Kapitan Keling Mosque, Sri Mahamariamman Temple, Goddess of Mercy Temple, Pinang Peranakan Mansion, Cheong Fatt Tze (Blue) Mansion, Esplanade & City Hall
 - Zone re-baked from the approved coastline by `tools/bake_zone.py` (no change to approved geography). The existing map already covers the whole heritage core, so it was not enlarged; instead the dense Pitt Street cluster is spread slightly (interpretive placement, directions links use real coordinates)
 - 3D models for the new stations; painted station pictures generated in the same style as the original five (`tools/import_sprites.py`)
@@ -55,25 +55,31 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 - [ ] Ad placeholders appear only on the station sheet, Kisah and Pasport, never over the game
 - [ ] Cats (12) and the new NPC tips; Heritage Hunter badge shows progress in the Pasport
 
-## Phase 3: Overworld and travel
-- Island + mainland travel map built from the approved geography
-- Zone loading system; fast travel by bus, ferry, funicular and the two bridges
-- Zone unlocks and one save across zones
+## Phase 3: Overworld and travel ← current
+- Overworld: 3D model of the whole state (island + mainland) from the approved coastline, bridges and ferry route; zone hotspots with progress, locked zones in pencil
+- Zones: George Town · Air Itam · **Penang Hill (its own zone, entered by the funicular from Air Itam)** · Gurney & north coast · Balik Pulau & south · Mainland
+- Zone loading (one zone in memory at a time), generic zone baker, travel scenes for bus, ferry, funicular and bridge
+- Unlock: the next zones open after 6 stamps in George Town; one save across zones (cats per zone)
+- Map mode for visitors: tap any station on the overworld for info, directions and partner link
+- Placeholders for QA: Air Itam (bus), Penang Hill (funicular from Air Itam), Butterworth (ferry)
 
-**QA:** travel between George Town and a placeholder second zone and back; progress kept.
+**QA:** bus, ferry and funicular there and back; progress kept; locked zones clear; still smooth on a mid-range phone.
 
-## Phase 4: Air Itam & Penang Hill
-- Interpretive hill terrain, funicular ride, Kek Lok Si, Air Itam market (asam laksa), Botanic Gardens
+## Phase 4: Air Itam
+- Kek Lok Si, Air Itam market (asam laksa), Botanic Gardens, funicular lower station
 
-## Phase 5: Gurney & the north coast
+## Phase 5: Penang Hill
+- Its own zone at the top of the funicular: hill-top landmarks, forest trails and viewpoints (station list confirmed with the owner at the start of the phase)
+
+## Phase 6: Gurney & the north coast
 - Gurney Drive and waterfront, Tanjung Bungah, Batu Ferringhi, Tropical Spice Garden, Teluk Bahang (Entopia, ESCAPE), Penang National Park
 
-## Phase 6: South, Balik Pulau and the mainland
+## Phase 7: South, Balik Pulau and the mainland
 - Balik Pulau (nutmeg, durian), Snake Temple, Queensbay/Bayan Lepas; Butterworth (ferry, Penang Sentral), Bukit Mertajam, Batu Kawan
 
-**QA for 4–6:** same as Phase 2 for each zone (content review + full play-through).
+**QA for 4–7:** same as Phase 2 for each zone (content review + full play-through).
 
-## Phase 7: Launch
+## Phase 8: Launch
 - Partner links live (affiliate agreements in place), privacy-friendly analytics
 - Offline play / installable web app, final performance and accessibility audit
 - Hosting + domain, content sign-off for every station, public launch

@@ -1,5 +1,6 @@
 /* Content loader: zones and stations are plain JSON under /content so new places are data, not code. */
 import outfitsData from '../content/outfits.json';
+import overworldData from '../content/overworld.json';
 
 export type Txt = { bm: string; en: string };
 export interface Station {
@@ -16,8 +17,12 @@ export interface Zone {
   world: { w: number; h: number; cell: number; grid: [number, number] };
   landmarks: Record<string, [number, number]>; sprites: Record<string, [number, number]>; triggers: Record<string, [number, number]>;
   start: [number, number]; ferryStop: [number, number]; ferryLine: [number, number][]; cats: [number, number][];
-  npcs: any[]; exits: any[];
+  npcs: any[]; exits: Exit[]; placeholder?: boolean;
 }
+export type TravelKind = 'bus' | 'ferry' | 'funicular' | 'bridge';
+export interface Exit { kind: TravelKind; at: string | [number, number]; to: string[]; label: Txt }
+export interface OwZone { id: string; name: Txt; at: [number, number]; lonlat: [number, number]; arrive: TravelKind; status: 'open' | 'soon'; via?: string }
+export interface Overworld { scale: number; bounds: [number, number, number, number]; land: number[][][]; bridges: number[][][]; ferries: number[][][]; zones: OwZone[]; unlock: { zone: string; stamps: number } }
 
 const zoneFiles = import.meta.glob('../content/zones/*.json', { eager: true, import: 'default' }) as Record<string, any>;
 const stationFiles = import.meta.glob('../content/stations/*.json', { eager: true, import: 'default' }) as Record<string, Station>;
@@ -32,11 +37,24 @@ for (const [path, data] of Object.entries(zoneFiles)) {
 export const STATIONS: Record<string, Station> = {};
 for (const st of Object.values(stationFiles)) STATIONS[st.id] = st;
 
-export const ZONE_ID = 'george-town';
+/* One zone (or the overworld map) per page load: ?z=<zone id> or ?z=map. Travel reloads the page, so only
+   one zone's world is ever in memory. */
+export const OVERWORLD = overworldData as unknown as Overworld;
+/* page state lives in the hash (#z=air-itam&from=george-town) so any static host or preview can serve it */
+export const navParams = (() => { const p = new URLSearchParams(typeof location !== 'undefined' ? location.search : ''); if (typeof location !== 'undefined') new URLSearchParams(location.hash.slice(1)).forEach((v, k) => p.set(k, v)); return p; })();
+export const TEST = navParams.has('test');
+export function navigate(z: string, from?: string) { const h = new URLSearchParams(); h.set('z', z); if (from) h.set('from', from); if (TEST) h.set('test', ''); location.hash = h.toString(); location.reload(); }
+const req = navParams.get('z');
+export const MODE: 'zone' | 'map' = req === 'map' ? 'map' : 'zone';
+export const ZONE_ID = req && ZONES[req] ? req : 'george-town';
 export const ZONE = ZONES[ZONE_ID];
 export const W3 = WORLD3D[ZONE_ID];
-export const IDS: string[] = ZONE.stations.slice().sort((a, b) => STATIONS[a].order - STATIONS[b].order);
+const byOrder = (ids: string[]) => ids.slice().sort((a, b) => STATIONS[a].order - STATIONS[b].order);
+export const zoneIds = (zid: string) => byOrder(ZONES[zid]?.stations || []);
+export const IDS: string[] = zoneIds(ZONE_ID);
 export const TOTAL = IDS.length * 3;
+export const ALL_IDS: string[] = Object.keys(ZONES).flatMap(zoneIds);
+export const ALL_TOTAL = ALL_IDS.length * 3;
 export const OUTFITS: { id: string; need: number }[] = (outfitsData as any).outfits;
 export const SKINS: string[] = (outfitsData as any).skins;
 export const BASE = import.meta.env.BASE_URL;

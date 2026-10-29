@@ -1,6 +1,6 @@
 /* Station hub, stamp award, Kisah page, Pasport and wardrobe. */
-import { STATIONS, IDS, TOTAL, ZONE, OUTFITS, sprite } from '../content';
-import { save, persist, tierOf, doneCount, blank, replaceSave } from '../game/save';
+import { STATIONS, IDS, ZONES, ZONE_ID, MODE, OUTFITS, ALL_TOTAL, zoneIds, sprite } from '../content';
+import { save, persist, tierOf, doneCount, blank, replaceSave, catsIn } from '../game/save';
 import { player, hooks } from '../game/state';
 import { L } from '../i18n';
 import { sfx } from '../audio';
@@ -41,7 +41,7 @@ function stampSvg(id: string, tier: number) {
   return `<div class="stamp"><svg role="img" aria-label="${esc(nm(id))} · ${L().tiers[tier]}" width="150" height="150" viewBox="0 0 156 156"><defs><path id="ring-${id}" d="M78 78m-58 0a58 58 0 1 1 116 0a58 58 0 1 1 -116 0"/></defs><circle cx="78" cy="78" r="76" fill="#fffaf0"/><circle cx="78" cy="78" r="72" fill="none" stroke="${col}" stroke-width="4"/><circle cx="78" cy="78" r="66" fill="none" stroke="${col}" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="78" cy="78" r="48" fill="${col}" fill-opacity=".22"/><text font-family="Nunito Sans, sans-serif" font-size="10.5" font-weight="900" letter-spacing="2.2" fill="${col}"><textPath href="#ring-${id}" startOffset="2%">${esc(nm(id).toUpperCase())} · ${L().tiers[tier].toUpperCase()} · ${ds} ·</textPath></text></svg><img src="${sprite(id)}" alt=""></div>`;
 }
 function showStamp(id: string, tier: number, fresh: boolean, unlocked: any) {
-  const t = L(); const allGold = IDS.every(i => tierOf(i) === 3); setRerender(() => showStamp(id, tier, false, null));
+  const t = L(); const allGold = ZONE_ID === 'george-town' && IDS.every(i => tierOf(i) === 3); setRerender(() => showStamp(id, tier, false, null));
   openSheet(`<div class="row"><div class="kicker">${fresh ? t.stamped(t.tiers[tier]) : esc(nm(id))}</div><button type="button" class="close" id="x" aria-label="${t.close}">${ICON_X}</button></div>
     ${stampSvg(id, tier)}<h2 id="sheet-title" style="text-align:center">${esc(nm(id))} · ${t.tiers[tier]}</h2><div style="display:flex;justify-content:center">${medals(id)}</div>
     ${tier === 3 ? `<div class="fb good" style="text-align:center"><b>${t.goldUnlocked}</b></div><button type="button" class="btn gold" id="rk">${t.readKisah}</button>` : `<p style="text-align:center">${t.toNext(3 - tier)}</p>`}
@@ -63,32 +63,36 @@ export function openKisah(id: string) {
     <div class="kicker" style="color:#12384a">${t.visit}</div>
     <div class="links">${off}<a class="btn ghost" href="${maps}" target="_blank" rel="noopener">${t.maps}</a></div>
     ${partner}${adSlot('kisah')}<div class="src"><b>${t.sources}:</b> ${k.src.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join(' · ')}</div></div>`,
-    () => { fillAds(); $('x').onclick = closeSheet; $('bk').onclick = () => openStation(id); });
+    () => { fillAds(); $('x').onclick = closeSheet; $('bk').onclick = () => (MODE === 'map' ? hooks.openStation(id) : openStation(id)); });
 }
 /* zone badge: Heritage Hunter, earned when every station in the zone is gold */
 function badgeCard() {
-  const t = L(), gold = IDS.filter(i => tierOf(i) === 3).length, on = gold === IDS.length;
+  const GT = zoneIds('george-town'); const t = L(), gold = GT.filter(i => tierOf(i) === 3).length, on = gold === GT.length;
   return `<div class="badge ${on ? 'on' : ''}" role="group" aria-label="${esc(t.badge)}"><svg aria-hidden="true" width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="${on ? '#e2a93f' : '#d9cfb8'}"/><circle cx="24" cy="24" r="17" fill="none" stroke="#fffaf0" stroke-width="2" stroke-dasharray="3 3"/><path d="M24 11l3.8 8 8.7 1-6.4 6 1.7 8.6L24 30.4l-7.8 4.2 1.7-8.6-6.4-6 8.7-1z" fill="${on ? '#fffaf0' : '#b9ad90'}"/></svg>
     <div><b>${esc(t.badge)}</b><div class="small">${on ? esc(t.badgeSub) : esc(t.badgeHow)} · ${t.badgeProg(gold, IDS.length)}</div></div></div>`;
 }
-const rankName = () => { const n = doneCount(), t = L(); return t.ranks[n >= TOTAL ? 3 : n >= TOTAL / 2 ? 2 : n >= 3 ? 1 : 0]; };
+const rankName = () => { const n = doneCount(), t = L(); return t.ranks[n >= ALL_TOTAL ? 3 : n >= ALL_TOTAL / 2 ? 2 : n >= 3 ? 1 : 0]; };
 export function openPassport() {
   const t = L(), n = doneCount(); setRerender(openPassport);
-  const cells = IDS.map(id => { const tr = tierOf(id); return `<button type="button" class="st t${tr}" data-id="${id}"><span class="c"><img src="${sprite(id, !tr)}" alt=""></span><span>${esc(nm(id))}</span><span class="small">${t.tiers[tr]}</span></button>`; }).join('');
+  // every zone with stations, current zone first; stations elsewhere open their info only
+  const zs = Object.keys(ZONES).filter(z => zoneIds(z).length).sort((a, b) => (b === ZONE_ID ? 1 : 0) - (a === ZONE_ID ? 1 : 0));
+  const cell = (id: string) => { const tr = tierOf(id); return `<button type="button" class="st t${tr}" data-id="${id}"><span class="c"><img src="${sprite(id, !tr)}" alt=""></span><span>${esc(nm(id))}</span><span class="small">${t.tiers[tr]}</span></button>`; };
+  const cells = zs.map(z => `${zs.length > 1 ? `<div class="kicker" style="color:#12384a">${esc(ZONES[z].name[save.lang])}</div>` : ''}<div class="grid3">${zoneIds(z).map(cell).join('')}</div>`).join('');
+  const catsHave = Object.keys(ZONES).reduce((a, z) => a + catsIn(z).length, 0), catsAll = Object.values(ZONES).reduce((a, z) => a + z.cats.length, 0);
   openSheet(`<div class="row"><div><div class="kicker">PASPORT PENANG</div><h2 id="sheet-title">${t.passTitle}</h2></div><button type="button" class="close" id="x" aria-label="${t.close}">${ICON_X}</button></div>
    <div class="row"><canvas id="pv" width="80" height="100" style="width:64px;height:80px;border-radius:14px;background:#e9dcbd"></canvas>
-    <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:900"><span>${rankName()} · ${esc(ZONE.name[save.lang])}</span><span>${t.stamps(n, TOTAL)}</span></div>
-    <div class="bar"><i style="width:${n / TOTAL * 100}%"></i></div><div class="small">${t.cats}: ${t.catsTxt(save.cats.length, ZONE.cats.length)}</div></div></div>
-   ${badgeCard()}<div class="grid3">${cells}</div><button type="button" class="btn navy" id="wd">${t.wardrobe}</button><div class="small">${t.note}</div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:13px;font-weight:900"><span>${rankName()}</span><span>${t.stamps(n, ALL_TOTAL)}</span></div>
+    <div class="bar"><i style="width:${n / ALL_TOTAL * 100}%"></i></div><div class="small">${t.cats}: ${t.catsTxt(catsHave, catsAll)}</div></div></div>
+   ${badgeCard()}${cells}<button type="button" class="btn navy" id="wd">${t.wardrobe}</button><div class="small">${t.note}</div>
    <div id="rs"><button type="button" class="btn ghost" id="reset" style="width:100%">${t.reset}</button></div>${adSlot('pasport')}`,
     () => {
       fillAds(); $('x').onclick = closeSheet; charPreview($('pv') as HTMLCanvasElement, save.look, save.outfit);
-      qa('.st').forEach(b => b.onclick = () => { const id = b.dataset.id!; if (tierOf(id) === 3) openKisah(id); else openStation(id); });
+      qa('.st').forEach(b => b.onclick = () => { const id = b.dataset.id!; if (MODE === 'map') hooks.openStation(id); else if (tierOf(id) === 3) openKisah(id); else if (IDS.includes(id)) openStation(id); else hooks.toast(L().playHere + ': ' + ZONES[STATIONS[id].zone].name[save.lang]); });
       $('wd').onclick = openWardrobe;
       $('reset').onclick = () => {
         $('rs').innerHTML = `<div class="fb" style="display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span>${t.resetQ}</span><span style="display:flex;gap:8px"><button type="button" class="btn ghost" id="rn">${t.no}</button><button type="button" class="btn pink" id="ry">${t.yes}</button></span></div>`;
         $('rn').onclick = openPassport;
-        $('ry').onclick = () => { const nb = blank(); nb.lang = save.lang; nb.look = save.look; nb.created = true; replaceSave(nb); persist(); hooks.resetWorld(); closeSheet(); };
+        $('ry').onclick = () => { const nb = blank(); nb.lang = save.lang; nb.look = save.look; nb.created = true; nb.zone = save.zone; replaceSave(nb); persist(); hooks.resetWorld(); closeSheet(); };
       };
     });
 }

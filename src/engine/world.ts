@@ -5,8 +5,8 @@ import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, 
 import { bakeDeep, bakeChildren, disposeTree } from './bake';
 import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT, stationMat } from './stations';
 import { makeChar, poseChar, faceTo } from './character';
-import { ZONE, W3, IDS, STATIONS } from '../content';
-import { save, tierOf } from '../game/save';
+import { ZONE, ZONE_ID, W3, IDS, STATIONS, type Exit } from '../content';
+import { save, tierOf, catsIn } from '../game/save';
 import { player, npcs } from '../game/state';
 import { L } from '../i18n';
 
@@ -104,7 +104,7 @@ function buildCats() {
     const tl = M('cyl8', a, 1.2, 12, 1.2, 0, 9, -8); tl.rotation.x = -.6; tl.userData.keep = true; g.add(tl); g.userData.tail = tl;
     g.position.set(p[0], 0, p[1]); g.rotation.y = (i * 1.7) % 6.28; g.scale.setScalar(1.1); scene.add(g);
     const body = bakeChildren(g, VCMAT); if (body) addOutline(body, .5); addOutline(tl, .5);
-    catMeshes[i] = g; g.visible = !save.cats.includes(i);
+    catMeshes[i] = g; g.visible = !catsIn(ZONE_ID).includes(i);
   });
 }
 function buildFerry() {
@@ -113,14 +113,24 @@ function buildFerry() {
   for (let i = 0; i < 5; i++) g.add(M('box', '#4d6a78', 5, 4, 1, -20 + i * 8, 9, 10.3, { noShadow: 1 }));
   ferryG = g; scene.add(g); const fm = bakeDeep(g, VCMAT); if (fm) addOutline(fm, 1);
 }
-function post(x: number, y: number) { const g = G(); g.add(M('cyl8', '#5c4630', 1.6, 30, 1.6, 0, 15, 0), M('box', '#12384a', 26, 12, 2, 0, 32, 0)); g.position.set(x, 0, y); scene.add(g); const m = bakeDeep(g, VCMAT); if (m) addOutline(m, .7); }
+function post(x: number, y: number, kind: string) {
+  const g = G(); g.add(M('cyl8', '#5c4630', 1.6, 30, 1.6, 0, 15, 0), M('box', '#12384a', 26, 12, 2, 0, 32, 0));
+  if (kind === 'funicular') { // small station hall with a red car on a short sloping track
+    g.add(M('box', '#f1e4c6', 60, 22, 34, 46, 11, -30), M('prism', '#b8452f', 66, 10, 40, 46, 22, -30));
+    const tr = M('box', '#6b5a48', 10, 2, 90, 46, 10, -90); tr.rotation.x = -.35; g.add(tr);
+    const car = M('box', '#c0392b', 14, 12, 22, 46, 20, -74); car.rotation.x = -.35; g.add(car, M('box', '#9fc6d4', 14.4, 4, 16, 46, 23, -74));
+  }
+  if (kind === 'ferry') g.add(M('box', '#e9ecef', 70, 18, 36, 50, 9, -34), M('box', '#2f6fb0', 74, 4, 40, 50, 20, -34), M('box', '#9fc6d4', 60, 6, 1, 50, 10, -15.6));
+  if (kind === 'bus') g.add(M('box', '#3e7d5e', 30, 1.6, 12, 22, 24, -4), M('cyl8', '#5c4630', .8, 24, .8, 9, 12, -9), M('cyl8', '#5c4630', .8, 24, .8, 35, 12, -9), M('box', '#b0895c', 22, 2, 5, 22, 7, -6));
+  g.position.set(x, 0, y); scene.add(g); const m = bakeDeep(g, VCMAT); if (m) addOutline(m, .7);
+}
 const VCMAT = new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: gradient });
 
 /* ---------- clouds: drift around the edges of the zone, never over the play area ---------- */
 const clouds: THREE.Mesh[] = [];
 function buildClouds() {
   const cm = new THREE.MeshToonMaterial({ color: '#ffffff', gradientMap: gradient, transparent: true, opacity: .94 });
-  const W = W3.w, H = W3.h; const spots = [[-260, 200], [-320, 900], [-240, 1600], [2300, 300], [2380, 1050], [2260, 1750], [400, -300], [1300, -340], [700, 2150], [1600, 2120]];
+  const W = W3.w, H = W3.h, kx = W / 2000, kz = H / 1800; const spots = [[-260, 200], [-320, 900], [-240, 1600], [2300, 300], [2380, 1050], [2260, 1750], [400, -300], [1300, -340], [700, 2150], [1600, 2120]].map(([x, z]) => [x * kx, z * kz]);
   spots.forEach(([x, z], i) => {
     const g = G(); const n = 5 + (i % 3);
     for (let k = 0; k < n; k++) { const r = 34 + ((i * 7 + k * 13) % 30); g.add(M('ico', '#ffffff', r, r * .62, r * .9, (k - n / 2) * 42 + ((k * 17) % 20), ((k * 5) % 3) * 8, ((k * 11) % 5) * 12 - 24)); }
@@ -145,11 +155,12 @@ export function updateLabels() {
     const th = g.userData.theta, ox = th != null ? 100 * Math.cos(th) : 0, oz = th != null ? 100 * Math.sin(th) : 0;
     place(el, g.position.x + ox, LABEL_H[id], g.position.z + oz);
   }
-  for (const ex of ZONE.exits) {
-    const el = LBL['exit-' + ex.kind]; const at = (ZONE as any)[ex.at]; const ic = ex.kind === 'bus' ? 'BAS' : (save.lang === 'bm' ? 'FERI' : 'FERRY');
+  ZONE.exits.forEach((ex, i) => {
+    const el = LBL['exit-' + i]; const ic = L().travelIc[ex.kind];
     const html = `<span class="ic">${ic}</span>${esc(ex.label[save.lang])}`; if (el._h !== html) { el.innerHTML = html; el._h = html; }
-    const [x, y] = exitPost(ex, at); place(el, x, 44, y);
-  }
+    const [x, y] = exitPost(ex); place(el, x, 44, y);
+  });
+  if (LBL.soon) { const html = `<span class="ic">${L().soon}</span>${esc(L().soonZone)}`; if (LBL.soon._h !== html) { LBL.soon.innerHTML = html; LBL.soon._h = html; } place(LBL.soon, ZONE.start[0], 90, ZONE.start[1] - 300); }
   for (const n of npcs) {
     const el = LBL['npc-' + n.id];
     if (n.bubble > 0) { const txt = n.say[save.lang]; if (el._h !== txt) { el.textContent = txt; el._h = txt; } place(el, n.x, 58, n.y); el.style.opacity = String(Math.min(1, n.bubble)); }
@@ -158,7 +169,9 @@ export function updateLabels() {
   if (player.path.length && player.target) { destMark.visible = true; destMark.position.set(player.target[0], 1, player.target[1]); const s = 1 + Math.sin(performance.now() / 250) * .12; destMark.scale.set(s, s, s); }
   else destMark.visible = false;
 }
-const exitPost = (ex: any, at: [number, number]): [number, number] => ex.kind === 'bus' ? [at[0] - 60, at[1] - 10] : [at[0] + 40, at[1]];
+/** where an exit's sign post stands; `at` is a zone key ('start', 'ferryStop') or a point */
+export const exitPoint = (ex: Exit): [number, number] => typeof ex.at === 'string' ? (ZONE as any)[ex.at] : ex.at;
+const exitPost = (ex: Exit): [number, number] => { const at = exitPoint(ex); return ex.kind === 'bus' ? [at[0] - 60, at[1] - 10] : [at[0] + 40, at[1]]; };
 
 /* ---------- reveal state ---------- */
 export const motion = { reduced: false };
@@ -198,20 +211,22 @@ export function updateWorld(dt: number, t: number) {
     prevN[i] = [n.x, n.y]; poseChar(m, n.walk, n.moving, t + i);
   });
   catMeshes.forEach((c, i) => { if (c.visible) c.userData.tail.rotation.z = Math.sin(t * 3 + i) * .5; });
-  ferryT = (ferryT + dt * .018) % 1; const F = ZONE.ferryLine; let tot = 0; const seg: number[] = [];
+  const F = ZONE.ferryLine; if (ferryG && F.length > 1) {
+  ferryT = (ferryT + dt * .018) % 1; let tot = 0; const seg: number[] = [];
   for (let i = 1; i < F.length; i++) { const d = Math.hypot(F[i][0] - F[i - 1][0], F[i][1] - F[i - 1][1]); seg.push(d); tot += d; }
   const pp = ferryT < .5 ? ferryT * 2 : 2 - ferryT * 2; let want = pp * tot, si = 0; while (si < seg.length - 1 && want > seg[si]) { want -= seg[si]; si++; }
   const a = F[si], b = F[si + 1], kk = Math.min(1, want / seg[si]); const fdir = ferryT < .5 ? 1 : -1;
   ferryG.position.set(a[0] + (b[0] - a[0]) * kk, -3 + Math.sin(t * 1.6) * .6, a[1] + (b[1] - a[1]) * kk);
-  ferryG.rotation.y = Math.atan2(-(b[1] - a[1]) * fdir, (b[0] - a[0]) * fdir);
+  ferryG.rotation.y = Math.atan2(-(b[1] - a[1]) * fdir, (b[0] - a[0]) * fdir); }
   (waterFx.material as THREE.ShaderMaterial).uniforms.t.value = motion.reduced ? 0 : t;
   for (const c of clouds) { const [hx] = c.userData.home; c.position.x = hx + Math.sin(t * c.userData.speed * .004 + hx) * 140; }
 }
 
 export function buildWorld(groundT: THREE.Texture, seaT: THREE.Texture) {
   document.getElementById('app')!.insertBefore(labelLayer, document.querySelector('.hud-top'));
-  buildIsland(groundT, seaT); buildHouses(); buildTrees(); buildStations(); buildCats(); buildFerry(); buildClouds();
-  for (const ex of ZONE.exits) { const [x, y] = exitPost(ex, (ZONE as any)[ex.at]); post(x, y); mkLabel('exit-' + ex.kind, 'sign'); }
+  buildIsland(groundT, seaT); buildHouses(); buildTrees(); buildStations(); buildCats(); if (ZONE.ferryLine.length > 1) buildFerry(); buildClouds();
+  if (ZONE.placeholder) mkLabel('soon', 'sign soon');
+  ZONE.exits.forEach((ex, i) => { const [x, y] = exitPost(ex); post(x, y, ZONE.placeholder ? ex.kind : ''); mkLabel('exit-' + i, 'sign'); });
   for (const id of IDS) mkLabel(id, 'lm');
   for (const n of npcs) { mkLabel('npc-' + n.id, 'bub'); const m = makeChar(n.look, n.outfit, false); m.scale.setScalar(.88); scene.add(m); npcMeshes.push(m); }
   destMark = new THREE.Mesh(new THREE.RingGeometry(9, 12, 32), new THREE.MeshBasicMaterial({ color: '#b8455f', transparent: true, opacity: .85, depthWrite: false }));
@@ -219,5 +234,5 @@ export function buildWorld(groundT: THREE.Texture, seaT: THREE.Texture) {
   rebuildPlayer(); syncReveal(); uploadReveal();
 }
 export { camera };
-export const exitAt = (kind: string) => { const ex = ZONE.exits.find(e => e.kind === kind); return ex ? exitPost(ex, (ZONE as any)[ex.at]) : null; };
+export const exitAt = (i: number) => exitPost(ZONE.exits[i]);
 export const _L = L;

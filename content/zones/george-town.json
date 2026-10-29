@@ -378,7 +378,9 @@
   {
    "kind": "bus",
    "at": "start",
-   "to": "air-itam",
+   "to": [
+    "air-itam"
+   ],
    "label": {
     "bm": "Hentian bas Komtar",
     "en": "Komtar bus stop"
@@ -387,7 +389,9 @@
   {
    "kind": "ferry",
    "at": "ferryStop",
-   "to": "butterworth",
+   "to": [
+    "butterworth"
+   ],
    "label": {
     "bm": "Jeti feri",
     "en": "Ferry jetty"

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-vi.mock('../src/content', () => ({ IDS: ['a', 'b'], ZONE: { world: { grid: [10, 10], cell: 10 } } }));
+vi.mock('../src/content', () => ({ IDS: ['a', 'b'], ALL_IDS: ['a', 'b'], ZONES: { 'george-town': {}, 'air-itam': {} }, ZONE: { world: { grid: [10, 10], cell: 10 } } }));
 
 describe('save', async () => {
   const { blank, tierOf, doneCount, replaceSave } = await import('../src/game/save');
@@ -35,4 +35,14 @@ describe('settings & tutorial save migration', async () => {
 describe('music', async () => {
   const { _test } = await import('../src/audio');
   it('melody stays inside the pentatonic scale', () => { for (const n of _test.MEL) expect(n === -1 || (n >= 0 && n < _test.SCALE.length)).toBe(true); });
+});
+describe('Phase 3 save: zones and cats', async () => {
+  const { normalise } = await import('../src/game/save');
+  it('moves old George Town cats under their zone and defaults the zone', () => {
+    const s = normalise({ v: 1, created: true, cats: [0, 3] }); expect(s.cats).toEqual({ 'george-town': [0, 3] }); expect(s.zone).toBe('george-town');
+  });
+  it('keeps per-zone cats and a known zone; resets an unknown zone', () => {
+    expect(normalise({ v: 1, created: true, zone: 'air-itam', cats: { 'air-itam': [1] } }).zone).toBe('air-itam');
+    expect(normalise({ v: 1, created: true, zone: 'atlantis' }).zone).toBe('george-town');
+  });
 });

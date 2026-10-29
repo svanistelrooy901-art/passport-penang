@@ -63,7 +63,14 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 - Map mode for visitors: tap any station on the overworld for info, directions and partner link
 - Placeholders for QA: Air Itam (bus), Penang Hill (funicular from Air Itam), Butterworth (ferry)
 
-**QA:** bus, ferry and funicular there and back; progress kept; locked zones clear; still smooth on a mid-range phone.
+**QA checklist**
+- [ ] Tap the zone name (top left) to open the Penang map; it reads well on a phone; pan, zoom, tap a zone
+- [ ] Map mode: tap George Town → list of places → any place shows info, directions and partner link; "Main di sini" takes you there
+- [ ] With fewer than 6 George Town stamps, other zones show as locked; with 6 they open
+- [ ] Bus from Komtar to Air Itam and back; funicular from Air Itam up to Penang Hill and back; ferry to Seberang Perai and back
+- [ ] After every trip: stamps, cats, outfit and language are kept; you arrive beside the stop you came from
+- [ ] Placeholder zones say clearly that their places are coming soon
+- [ ] Still smooth on a mid-range phone (map and zones)
 
 ## Phase 4: Air Itam
 - Kek Lok Si, Air Itam market (asam laksa), Botanic Gardens, funicular lower station

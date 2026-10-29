@@ -1,5 +1,5 @@
 /* Title card + character creator (skin tone, hair incl. tudung). */
-import { SKINS } from '../content';
+import { SKINS, navParams } from '../content';
 import { save, persist, doneCount } from '../game/save';
 import { flags, hooks } from '../game/state';
 import { L } from '../i18n';
@@ -32,4 +32,5 @@ export function startPlaying() {
   if (!flags.ready) return; save.created = true; persist(); hooks.rebuildPlayer();
   $('intro').hidden = true; clearInterval(timer); flags.running = true; hooks.onStart(); sfx(660, .08); refreshText();
 }
-export const shouldAutoStart = () => save.created && doneCount() > 0;
+/* returning players (or anyone arriving from another zone or the map) skip the title card */
+export const shouldAutoStart = () => save.created && (doneCount() > 0 || navParams.has('from'));

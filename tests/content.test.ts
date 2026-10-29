@@ -55,3 +55,24 @@ describe('stations', () => {
     it('records fact-check date and owner review state', () => { expect(st.factsChecked).toMatch(/^\d{4}-\d{2}-\d{2}$/); expect(['pending', 'approved']).toContain(st.review.owner); });
   });
 });
+
+describe('zones and the overworld (Phase 3)', () => {
+  const ow = JSON.parse(readFileSync('content/overworld.json', 'utf8'));
+  const zfiles = readdirSync('content/zones').filter(f => f.endsWith('.json') && !f.endsWith('.world3d.json'));
+  const zs = Object.fromEntries(zfiles.map(f => { const z = JSON.parse(readFileSync(`content/zones/${f}`, 'utf8')); return [z.id, z]; }));
+  it('every open overworld zone has a zone file, 3D data and hotspot art', () => {
+    for (const z of ow.zones) {
+      expect(existsSync(`public/overworld/${z.id}.webp`), z.id).toBe(true);
+      if (z.status === 'open') { expect(zs[z.id], z.id).toBeTruthy(); expect(existsSync(`content/zones/${z.id}.world3d.json`)).toBe(true); for (const f of ['walk.png', 'ground.webp', 'sea.webp']) expect(existsSync(`public/zones/${z.id}/${f}`), z.id + f).toBe(true); }
+    }
+  });
+  it('every exit goes to a known zone and every zone can be left', () => {
+    const ids = ow.zones.map((z: any) => z.id);
+    for (const z of Object.values(zs) as any[]) { expect(z.exits.length, z.id).toBeGreaterThan(0); for (const e of z.exits) { expect(['bus', 'ferry', 'funicular', 'bridge']).toContain(e.kind); for (const t of e.to) expect(ids, z.id + ' → ' + t).toContain(t); } }
+  });
+  it('Penang Hill is reached by the funicular from Air Itam and back', () => {
+    expect(zs['air-itam'].exits.some((e: any) => e.kind === 'funicular' && e.to.includes('penang-hill'))).toBe(true);
+    expect(zs['penang-hill'].exits.some((e: any) => e.kind === 'funicular' && e.to.includes('air-itam'))).toBe(true);
+  });
+  it('unlock rule points at a zone with enough stamps', () => { expect(zs[ow.unlock.zone].stations.length * 3).toBeGreaterThanOrEqual(ow.unlock.stamps); });
+});

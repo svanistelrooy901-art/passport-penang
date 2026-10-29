@@ -1,0 +1,77 @@
+{
+ "id": "butterworth",
+ "name": {
+  "bm": "Seberang Perai",
+  "en": "Seberang Perai"
+ },
+ "label": {
+  "bm": "ZON 6",
+  "en": "ZONE 6"
+ },
+ "placeholder": true,
+ "stations": [],
+ "world": {
+  "w": 1400,
+  "h": 1200,
+  "cell": 10,
+  "grid": [
+   140,
+   120
+  ]
+ },
+ "landmarks": {},
+ "sprites": {},
+ "triggers": {},
+ "start": [
+  695,
+  895
+ ],
+ "ferryLine": [],
+ "cats": [
+  [
+   435,
+   655
+  ],
+  [
+   795,
+   525
+  ],
+  [
+   575,
+   905
+  ]
+ ],
+ "npcs": [
+  {
+   "id": "guide",
+   "x": 775,
+   "y": 635,
+   "look": {
+    "skin": 1,
+    "hair": 2
+   },
+   "outfit": "kurung",
+   "wander": false,
+   "say": {
+    "bm": "Penang Sentral dan stesen di tanah besar akan datang!",
+    "en": "Penang Sentral and mainland stations are coming soon!"
+   }
+  }
+ ],
+ "exits": [
+  {
+   "kind": "ferry",
+   "at": [
+    695,
+    1005
+   ],
+   "to": [
+    "george-town"
+   ],
+   "label": {
+    "bm": "Terminal feri Butterworth",
+    "en": "Butterworth ferry terminal"
+   }
+  }
+ ]
+}

@@ -1,8 +1,8 @@
 /* Entry: wires engine, game state and UI; runs the frame loop and input. */
 import * as THREE from 'three';
 import './styles.css';
-import { ZONE, IDS, zoneAsset } from './content';
-import { save, persist } from './game/save';
+import { ZONE, ZONE_ID, IDS, MODE, zoneAsset, navParams, TEST } from './content';
+import { save, persist, catsIn } from './game/save';
 import { flags, player, npcs, keysDown, hooks } from './game/state';
 import { goTo, stepActor, stepKeys, stepNpc } from './game/actors';
 import { renderer, scene, camera, cv, view, camS, ZOOM, MOBILE, updateCamera, resize, loadTex, applyQuality, fitShadow, quality, type QualityName } from './engine/core';
@@ -17,18 +17,25 @@ import { sfx, applyAudio } from './audio';
 import { openSettings } from './ui/settings';
 import { tutorialTick, tutorialEvent, setTutorialOrigin, renderTutorial } from './ui/tutorial';
 import { reducedMotion } from './game/save';
+import { openTravel, openTravelAll, goMap, travelTo } from './ui/travel';
+import { exitPoint } from './engine/world';
+import { zoneName } from './game/zones';
+import { bootMap } from './overworld';
 import { L } from './i18n';
 
 hooks.openStation = openStation; hooks.toast = toast; hooks.sfx = sfx; hooks.tutorial = tutorialEvent;
-hooks.applySettings = applySettings;
+hooks.applySettings = applySettings; hooks.openTravel = openTravel;
 hooks.restartTutorial = () => { setTutorialOrigin(); renderTutorial(); };
-hooks.onStart = () => { applySettings(); setTutorialOrigin(); };
+hooks.onStart = () => { applySettings(); setTutorialOrigin(); if (ARRIVED) setTimeout(() => toast(L().welcome(zoneName(ZONE_ID, save.lang))), 400); };
+const ARRIVED = navParams.get('from');
 hooks.rebuildPlayer = () => { if (flags.ready) rebuildPlayer(); };
 hooks.startReveal = r => reveals.push(r);
 hooks.resetWorld = () => { syncReveal(); catMeshes.forEach(m => m.visible = true); rebuildPlayer(); spawn(); };
 
 function spawn() {
-  const sp = nearestWalkable(Math.floor((ZONE.start[0] + 70) / CELL), Math.floor((ZONE.start[1] + 70) / CELL));
+  // arriving from another zone: start beside the stop that goes back there
+  const ex = ARRIVED ? ZONE.exits.find(e => e.to.includes(ARRIVED)) : null; const [ax, ay] = ex ? exitPoint(ex) : [ZONE.start[0] + 70, ZONE.start[1] + 70];
+  const sp = nearestWalkable(Math.floor(ax / CELL), Math.floor((ay + (ex ? 30 : 0)) / CELL));
   if (sp) { player.x = sp[0] * CELL + 5; player.y = sp[1] * CELL + 5; }
   player.path = []; camS.tx = player.x; camS.tz = player.y;
 }
@@ -52,12 +59,12 @@ function frame(now: number) {
     if (r.r >= r.target) reveals.splice(i, 1);
   }
   uploadReveal();
-  if (flags.running && !flags.modalOpen) ZONE.cats.forEach((p, i) => {
-    if (!save.cats.includes(i) && Math.hypot(player.x - p[0], player.y - p[1]) < 42) {
-      save.cats.push(i); persist(); catMeshes[i].visible = false; sfx(900, .08); setTimeout(() => sfx(1200, .1), 90);
-      toast(save.cats.length === ZONE.cats.length ? L().catAll : L().catFound(save.cats.length, ZONE.cats.length)); refreshText();
+  if (flags.running && !flags.modalOpen) { const got = catsIn(ZONE_ID); ZONE.cats.forEach((p, i) => {
+    if (!got.includes(i) && Math.hypot(player.x - p[0], player.y - p[1]) < 42) {
+      got.push(i); persist(); catMeshes[i].visible = false; sfx(900, .08); setTimeout(() => sfx(1200, .1), 90);
+      toast(got.length === ZONE.cats.length ? L().catAll : L().catFound(got.length, ZONE.cats.length)); refreshText();
     }
-  });
+  }); }
   updateWorld(dt, t); updateCamera(motion.reduced ? 1 : dt); fitShadow(); renderer.render(scene, camera); updateLabels();
   if (flags.running) {
     updateHud(); tutorialTick();
@@ -124,7 +131,11 @@ function initInput() {
   window.addEventListener('blur', () => keysDown.clear());
   $('btn-pass').onclick = () => { if (flags.running) openPassport(); };
   $('btn-set').onclick = () => { if (flags.running) openSettings(); };
-  $('btn-cats').onclick = () => { if (flags.running) toast(save.cats.length === ZONE.cats.length ? L().catAll : L().catsHelp + ' (' + save.cats.length + '/' + ZONE.cats.length + ')'); };
+  $('btn-cats').onclick = () => { const n = catsIn(ZONE_ID).length; if (flags.running) toast(n === ZONE.cats.length ? L().catAll : L().catsHelp + ' (' + n + '/' + ZONE.cats.length + ')'); };
+  $('btn-map').onclick = () => { if (flags.running && !flags.modalOpen) goMap(); };
+  $('btn-travel').onclick = () => { if (flags.running && !flags.modalOpen) openTravelAll(); };
+  // audio needs a gesture after every page load (travel reloads the page)
+  const unlockAudio = () => { if (flags.running) { applyAudio(); window.removeEventListener('pointerdown', unlockAudio); } }; window.addEventListener('pointerdown', unlockAudio);
 }
 
 /* ---------- boot ---------- */
@@ -138,7 +149,7 @@ async function boot() {
   loadGrid(walk); spawn(); buildWorld(ground!, sea!); applySettings();
   flags.ready = true; renderIntro();
   if (shouldAutoStart()) startPlaying();
-  if (location.hash === '#test') (window as any).__pp = { openStation, save: () => save, camS, player, syncReveal, revState, SAT, MOBILE, quality, calls: () => renderer.info.render.calls, walkable: walkableAt, zone: ZONE, tris: () => renderer.info.render.triangles };
+  if (TEST) (window as any).__pp = { openStation, save: () => save, camS, player, syncReveal, revState, SAT, MOBILE, quality, calls: () => renderer.info.render.calls, walkable: walkableAt, zone: ZONE, zoneId: ZONE_ID, travelTo, openTravel, tris: () => renderer.info.render.triangles };
   requestAnimationFrame(t => { last = t; frame(t); });
 }
-boot().catch(err => { console.error(err); const b = document.getElementById('start'); if (b) b.textContent = 'Ralat memuatkan · Load error'; });
+(MODE === 'map' ? bootMap() : boot()).catch(err => { console.error(err); const b = document.getElementById('start'); if (b) b.textContent = 'Ralat memuatkan · Load error'; });

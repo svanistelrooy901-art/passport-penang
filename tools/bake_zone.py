@@ -366,7 +366,54 @@ for k in range(len(uniq)):
     houses.append([round(x, 1), round(y, 1), round(w - 1.5, 1), round(d - 2, 1), int(h), r % 7, (r // 7) % 5])
 
 trees = [[round(float(x), 1), round(float(y), 1), round(float(r), 1)] for x, y, r in tree_pts]
-json.dump({'w': W, 'h': H, 'angle': ang, 'coast': polys, 'decks': decks, 'houses': houses, 'trees': trees}, open(f'{REPO}/content/zones/george-town.world3d.json', 'w'), separators=(',', ':'))
+
+
+# ---------- neighbouring land (the rest of Penang, drawn faded beyond this zone's coast) ----------
+# Every land polygon of the approved geography is projected with this zone's P(), so the land that continues
+# past the frame (Air Itam, the hill, the north and south, the mainland) sits in the right place. Tiny islets
+# and duplicate relation rings are dropped, as in tools/bake_overworld.py.
+def neighbour_land(tol=2.5):
+    rings = []
+    for f in geo['features']:
+        g = f['geometry']
+        if g['type'] != 'MultiPolygon': continue  # bridges and ferry lines are not land
+        for poly in g['coordinates']:
+            pts = np.array([P(*c) for c in poly[0]])
+            s = measure.approximate_polygon(pts, tolerance=tol)
+            a_ = s; area = .5 * abs(np.dot(a_[:, 0], np.roll(a_[:, 1], 1)) - np.dot(a_[:, 1], np.roll(a_[:, 0], 1)))
+            if len(s) >= 4 and area > 4000: rings.append(s)
+    def bbox(r): return np.r_[r.min(0), r.max(0)]
+    uniq = []
+    for r in sorted(rings, key=len, reverse=True):
+        if not any(np.abs(bbox(r) - bbox(u)).max() < 270 for u in uniq): uniq.append(r)
+    return [r.round(1).tolist() for r in uniq]
+
+
+land = neighbour_land()
+# the other zones, as areas on the land beyond this one (names and places from content/overworld.json)
+areas = [{'id': z['id'], 'name': z['name'], 'at': [round(v, 1) for v in P(*z['lonlat'])]}
+         for z in json.load(open(f'{REPO}/content/overworld.json'))['zones'] if z['id'] != 'george-town']
+# the zone's edge (its frame) where it runs over land: a visible border line, drawn only on land
+def on_land(x, y):
+    for r in land:
+        c = False; j = len(r) - 1
+        for i in range(len(r)):
+            xi, yi = r[i]; xj, yj = r[j]
+            if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi) + xi: c = not c
+            j = i
+        if c: return True
+    return False
+per = [(t, 0) for t in np.arange(0, W, 14)] + [(W, t) for t in np.arange(0, H, 14)] + [(W - t, H) for t in np.arange(0, W, 14)] + [(0, H - t) for t in np.arange(0, H, 14)]
+runs, cur = [], []
+for x, y in per:
+    x, y = float(x), float(y)
+    if on_land(x, y): cur.append([round(x, 1), round(y, 1)])
+    elif cur: runs.append(cur); cur = []
+if cur: runs.append(cur)
+border = [r for r in runs if len(r) > 1]
+print('border runs', len(border), [len(r) for r in border])
+json.dump({'w': W, 'h': H, 'angle': ang, 'coast': polys, 'decks': decks, 'houses': houses, 'trees': trees, 'land': land, 'areas': areas, 'border': border}, open(f'{REPO}/content/zones/george-town.world3d.json', 'w'), separators=(',', ':'))
+print('neighbour land rings', len(land), [len(r) for r in land][:8], 'areas', [a['id'] for a in areas])
 print('houses', len(houses), 'trees', len(trees), 'coast', [len(p) for p in polys], 'decks', len(decks))
 
 # ---------- merge computed fields into the zone file ----------

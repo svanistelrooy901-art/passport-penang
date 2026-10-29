@@ -12,7 +12,7 @@ export function setTutorialOrigin() { origin = [player.x, player.y]; }
 function nextStationName() { const id = IDS[0]; return STATIONS[id].name[save.lang]; }
 export function renderTutorial() {
   const el = coach(); const step = save.tutorial; const t = L();
-  const show = flags.running && !flags.modalOpen && step < TUTORIAL_DONE;
+  const show = flags.running && !flags.modalOpen && step < TUTORIAL_DONE && IDS.length > 0;
   el.hidden = !show; $('quest').classList.toggle('pulse', show && step === 1);
   if (!show) return;
   const text = t.tut[step].replace('{n}', nextStationName());
@@ -27,6 +27,7 @@ export function renderTutorial() {
 function advance(to: number) { if (to <= save.tutorial) return; save.tutorial = to; persist(); renderTutorial(); }
 /** called every frame while playing */
 export function tutorialTick() {
+  if (!IDS.length) return;
   if (save.tutorial >= TUTORIAL_DONE) { if (!coach().hidden) renderTutorial(); return; }
   if (save.tutorial === 0 && origin && Math.hypot(player.x - origin[0], player.y - origin[1]) > 40) advance(1);
   if (save.tutorial === 1 && !$('prompt').hidden && $('prompt-go').dataset.kind === 'place') advance(2);

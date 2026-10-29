@@ -1,0 +1,77 @@
+{
+ "id": "penang-hill",
+ "name": {
+  "bm": "Bukit Bendera",
+  "en": "Penang Hill"
+ },
+ "label": {
+  "bm": "ZON 3",
+  "en": "ZONE 3"
+ },
+ "placeholder": true,
+ "stations": [],
+ "world": {
+  "w": 1400,
+  "h": 1200,
+  "cell": 10,
+  "grid": [
+   140,
+   120
+  ]
+ },
+ "landmarks": {},
+ "sprites": {},
+ "triggers": {},
+ "start": [
+  695,
+  895
+ ],
+ "ferryLine": [],
+ "cats": [
+  [
+   485,
+   475
+  ],
+  [
+   815,
+   935
+  ],
+  [
+   795,
+   425
+  ]
+ ],
+ "npcs": [
+  {
+   "id": "guide",
+   "x": 775,
+   "y": 635,
+   "look": {
+    "skin": 1,
+    "hair": 2
+   },
+   "outfit": "kurung",
+   "wander": false,
+   "say": {
+    "bm": "Udara di atas bukit lebih sejuk. Mercu tanda bukit akan datang!",
+    "en": "The air up here is cooler. Hill-top landmarks are coming soon!"
+   }
+  }
+ ],
+ "exits": [
+  {
+   "kind": "funicular",
+   "at": [
+    695,
+    1005
+   ],
+   "to": [
+    "air-itam"
+   ],
+   "label": {
+    "bm": "Stesen atas kereta api Bukit Bendera",
+    "en": "Penang Hill upper station"
+   }
+  }
+ ]
+}

@@ -1,0 +1,91 @@
+{
+ "id": "air-itam",
+ "name": {
+  "bm": "Air Itam",
+  "en": "Air Itam"
+ },
+ "label": {
+  "bm": "ZON 2",
+  "en": "ZONE 2"
+ },
+ "placeholder": true,
+ "stations": [],
+ "world": {
+  "w": 1400,
+  "h": 1200,
+  "cell": 10,
+  "grid": [
+   140,
+   120
+  ]
+ },
+ "landmarks": {},
+ "sprites": {},
+ "triggers": {},
+ "start": [
+  695,
+  895
+ ],
+ "ferryLine": [],
+ "cats": [
+  [
+   355,
+   375
+  ],
+  [
+   1055,
+   225
+  ],
+  [
+   235,
+   815
+  ]
+ ],
+ "npcs": [
+  {
+   "id": "guide",
+   "x": 775,
+   "y": 635,
+   "look": {
+    "skin": 1,
+    "hair": 2
+   },
+   "outfit": "kurung",
+   "wander": false,
+   "say": {
+    "bm": "Kek Lok Si, pasar Air Itam dan Taman Botani akan datang di sini!",
+    "en": "Kek Lok Si, Air Itam market and the Botanic Gardens are coming here!"
+   }
+  }
+ ],
+ "exits": [
+  {
+   "kind": "bus",
+   "at": [
+    695,
+    1005
+   ],
+   "to": [
+    "george-town"
+   ],
+   "label": {
+    "bm": "Hentian bas Air Itam",
+    "en": "Air Itam bus stop"
+   }
+  },
+  {
+   "kind": "funicular",
+   "at": [
+    1055,
+    415
+   ],
+   "to": [
+    "penang-hill"
+   ],
+   "label": {
+    "bm": "Stesen bawah kereta api Bukit Bendera",
+    "en": "Penang Hill lower station"
+   }
+  }
+ ]
+}

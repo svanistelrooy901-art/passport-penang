@@ -47,8 +47,32 @@ const run = async (vp, tag) => {
   await p.click('#x'); await p.click('#btn-pass'); await p.waitForSelector('#wd'); await p.click('#wd'); await p.waitForSelector('.ward'); await p.screenshot({ path: `${OUT}/${tag}-5-wardrobe.png` });
   const state = await p.evaluate(() => window.__pp.save().games.komtar.join(''));
   if (state !== '111') errs.push(`${tag} komtar progress ${state}`);
+  if (tag === 'phone') await travel(p, tag);
   await p.close();
 };
+// Phase 3: unlock with 6 stamps, bus to Air Itam (progress kept), funicular to Penang Hill, the map, back to George Town
+async function travel(p, tag) {
+  const ready = () => p.waitForFunction(() => window.__pp, null, { timeout: 90000 });
+  await p.evaluate(() => { const s = window.__pp.save(); ['chowrasta', 'bluemansion'].forEach(k => s.games[k] = [1, 1, 1]); localStorage.setItem('pasportPenang.save.v1', JSON.stringify(s)); });
+  const before = await p.evaluate(() => JSON.stringify(window.__pp.save().games));
+  await p.evaluate(() => window.__pp.openTravel(0)); await p.waitForSelector('.dest[data-dest="air-itam"]');
+  if (await p.getAttribute('.dest[data-dest="air-itam"]', 'aria-disabled')) errs.push(`${tag} Air Itam still locked after 6 stamps`);
+  await p.click('.dest[data-dest="air-itam"]'); await p.waitForSelector('.travel svg');
+  await p.waitForURL(/z=air-itam/, { timeout: 20000 }); await ready(); await p.waitForTimeout(800);
+  const ai = await p.evaluate(() => ({ z: window.__pp.zoneId, g: JSON.stringify(window.__pp.save().games), saved: window.__pp.save().zone }));
+  if (ai.z !== 'air-itam' || ai.saved !== 'air-itam') errs.push(`${tag} did not arrive in Air Itam: ${JSON.stringify(ai)}`);
+  if (ai.g !== before) errs.push(`${tag} progress changed after travel`);
+  await p.screenshot({ path: `${OUT}/${tag}-6-air-itam.png` });
+  await p.evaluate(() => window.__pp.travelTo('penang-hill', 'funicular')); await p.waitForURL(/z=penang-hill/, { timeout: 20000 }); await ready();
+  if ((await p.evaluate(() => window.__pp.zoneId)) !== 'penang-hill') errs.push(`${tag} funicular did not reach Penang Hill`);
+  await p.click('#btn-map'); await p.waitForURL(/z=map/, { timeout: 20000 }); await ready(); await p.waitForTimeout(1200);
+  if ((await p.evaluate(() => window.__pp.mode)) !== 'map') errs.push(`${tag} map did not open`);
+  if ((await p.evaluate(() => window.__pp.zoneState('north'))) !== 'soon') errs.push(`${tag} north coast should be coming soon`);
+  await p.screenshot({ path: `${OUT}/${tag}-7-map.png` });
+  await p.evaluate(() => window.__pp.openInfo('kuanyin')); await p.waitForSelector('#play');
+  await p.evaluate(() => window.__pp.travelTo('george-town')); await p.waitForURL(/z=george-town/, { timeout: 20000 }); await ready();
+  if ((await p.evaluate(() => JSON.stringify(window.__pp.save().games))) !== before) errs.push(`${tag} progress changed after the round trip`);
+}
 try { await run({ width: 390, height: 844 }, 'phone'); await run({ width: 1280, height: 800 }, 'desktop'); }
 catch (e) { errs.push(String(e)); }
 await b.close(); server.close();

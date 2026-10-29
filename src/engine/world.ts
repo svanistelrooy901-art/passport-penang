@@ -1,12 +1,14 @@
 /* Zone world: raised diorama island from the approved coastline, instanced shophouses and trees,
    station models, cats, ferry, signposts, DOM labels and the reveal state. */
 import * as THREE from 'three';
-import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline } from './core';
+import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline, view, focus } from './core';
 import { bakeDeep, bakeChildren, disposeTree } from './bake';
 import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT, stationMat } from './stations';
 import { makeChar, poseChar, faceTo } from './character';
-import { ZONE, W3, IDS, STATIONS } from '../content';
-import { save, tierOf } from '../game/save';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { ZONE, ZONE_ID, W3, IDS, STATIONS, type Exit } from '../content';
+import { save, tierOf, catsIn } from '../game/save';
+import { zoneState, unlockNeed } from '../game/zones';
 import { player, npcs } from '../game/state';
 import { L } from '../i18n';
 
@@ -14,7 +16,8 @@ const PASTEL = ['#f2e3a1', '#bfe0d2', '#f3c9b8', '#c9d9ee', '#f5efe1', '#e7c98e'
 const ROOFC = ['#c65b3c', '#b94e33', '#d06a45', '#a9472f', '#c97a4c'];
 export const landmarkGroups: Record<string, THREE.Group> = {};
 export const catMeshes: THREE.Group[] = [];
-export let ferryG: THREE.Group; let waterFx: THREE.Mesh; let destMark: THREE.Mesh;
+export let ferryG: THREE.Group; let waterFx: THREE.Mesh; let destMark: THREE.Mesh; let hazeMat: THREE.MeshBasicMaterial | null = null;
+const HAZE_LOCK = '#b9bcb6', HAZE_OPEN = '#bcd9b5';
 export let playerMesh: THREE.Group; export const npcMeshes: THREE.Group[] = [];
 
 const facadeTex = canvasTex(64, 64, (g, w, h) => {
@@ -30,9 +33,9 @@ roofTileTex.repeat.set(1, 3);
 
 function buildIsland(groundT: THREE.Texture, seaT: THREE.Texture) {
   const W = W3.w, H = W3.h;
-  const deep = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.MeshLambertMaterial({ color: '#2a8fab' })); deep.rotation.x = -Math.PI / 2; deep.position.set(W / 2, -9, H / 2); deep.receiveShadow = true; scene.add(deep);
+  const deep = new THREE.Mesh(new THREE.PlaneGeometry(300000, 300000), new THREE.MeshLambertMaterial({ color: '#2a8fab' })); deep.rotation.x = -Math.PI / 2; deep.position.set(W / 2, -9, H / 2); deep.receiveShadow = true; scene.add(deep);
   const seaP = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshLambertMaterial({ map: seaT })); seaP.rotation.x = -Math.PI / 2; seaP.position.set(W / 2, -8.8, H / 2); seaP.receiveShadow = true; scene.add(seaP);
-  waterFx = new THREE.Mesh(new THREE.PlaneGeometry(9000, 9000), new THREE.ShaderMaterial({
+  waterFx = new THREE.Mesh(new THREE.PlaneGeometry(300000, 300000), new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, uniforms: { t: { value: 0 } },
     vertexShader: 'varying vec2 vP;void main(){vec4 w=modelMatrix*vec4(position,1.0);vP=w.xz;gl_Position=projectionMatrix*viewMatrix*w;}',
     fragmentShader: 'uniform float t;varying vec2 vP;void main(){float a=sin(vP.x*.045+t*1.3+sin(vP.y*.03+t*.7)*2.0)*sin(vP.y*.06-t*1.1);float l=smoothstep(.86,.97,a);gl_FragColor=vec4(1.0,1.0,1.0,l*.32);}',
@@ -47,6 +50,26 @@ function buildIsland(groundT: THREE.Texture, seaT: THREE.Texture) {
     const pos = g.attributes.position, uv = g.attributes.uv;
     for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / W, 1 - pos.getZ(i) / H);
     const m = new THREE.Mesh(g, [groundMat, side]); m.receiveShadow = true; scene.add(m);
+  }
+  // the rest of Penang: solid land slabs (grey while George Town is locked, green once another zone opens),
+  // so the sea never shows through or under them
+  const topM = hazeMat = new THREE.MeshBasicMaterial({ color: HAZE_LOCK }), sideM = new THREE.MeshBasicMaterial({ color: '#7f857c' });
+  const slabs = (W3.land || []).map((ring: number[][]) => {
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(ring.map(p => new THREE.Vector2(p[0], p[1]))), { depth: 14, bevelEnabled: false, curveSegments: 1 });
+    g.rotateX(Math.PI / 2); g.translate(0, -.6, 0); return g;
+  });
+  if (slabs.length) scene.add(new THREE.Mesh(mergeGeometries(slabs, true), [topM, sideM]));
+  // the zone's edge where it meets land: a gold line that marks where this zone stops
+  const edges: THREE.BufferGeometry[] = [];
+  for (const run of W3.border || []) for (let i = 0; i < run.length - 1; i++) {
+    const [x0, z0] = run[i], [x1, z1] = run[i + 1], len = Math.hypot(x1 - x0, z1 - z0); if (len < .5) continue;
+    const b = new THREE.BoxGeometry(len + 4, 14, 22); b.rotateY(-Math.atan2(z1 - z0, x1 - x0)); b.translate((x0 + x1) / 2, 7, (z0 + z1) / 2); edges.push(b);
+  }
+  if (edges.length) scene.add(new THREE.Mesh(mergeGeometries(edges), new THREE.MeshBasicMaterial({ color: '#f3c46a' })));
+  // the middle of the whole state (for the far zoom-out)
+  const all = (W3.land || []).flat(); if (all.length) {
+    const xs = all.map((p: number[]) => p[0]), ys = all.map((p: number[]) => p[1]);
+    focus.x = (Math.min(...xs) + Math.max(...xs)) / 2; focus.z = (Math.min(...ys) + Math.max(...ys)) / 2; focus.on = true;
   }
   const plank = mat('#a27a4f');
   for (const poly of W3.decks) {
@@ -104,7 +127,7 @@ function buildCats() {
     const tl = M('cyl8', a, 1.2, 12, 1.2, 0, 9, -8); tl.rotation.x = -.6; tl.userData.keep = true; g.add(tl); g.userData.tail = tl;
     g.position.set(p[0], 0, p[1]); g.rotation.y = (i * 1.7) % 6.28; g.scale.setScalar(1.1); scene.add(g);
     const body = bakeChildren(g, VCMAT); if (body) addOutline(body, .5); addOutline(tl, .5);
-    catMeshes[i] = g; g.visible = !save.cats.includes(i);
+    catMeshes[i] = g; g.visible = !catsIn(ZONE_ID).includes(i);
   });
 }
 function buildFerry() {
@@ -113,14 +136,24 @@ function buildFerry() {
   for (let i = 0; i < 5; i++) g.add(M('box', '#4d6a78', 5, 4, 1, -20 + i * 8, 9, 10.3, { noShadow: 1 }));
   ferryG = g; scene.add(g); const fm = bakeDeep(g, VCMAT); if (fm) addOutline(fm, 1);
 }
-function post(x: number, y: number) { const g = G(); g.add(M('cyl8', '#5c4630', 1.6, 30, 1.6, 0, 15, 0), M('box', '#12384a', 26, 12, 2, 0, 32, 0)); g.position.set(x, 0, y); scene.add(g); const m = bakeDeep(g, VCMAT); if (m) addOutline(m, .7); }
+function post(x: number, y: number, kind: string) {
+  const g = G(); g.add(M('cyl8', '#5c4630', 1.6, 30, 1.6, 0, 15, 0), M('box', '#12384a', 26, 12, 2, 0, 32, 0));
+  if (kind === 'funicular') { // small station hall with a red car on a short sloping track
+    g.add(M('box', '#f1e4c6', 60, 22, 34, 46, 11, -30), M('prism', '#b8452f', 66, 10, 40, 46, 22, -30));
+    const tr = M('box', '#6b5a48', 10, 2, 90, 46, 10, -90); tr.rotation.x = -.35; g.add(tr);
+    const car = M('box', '#c0392b', 14, 12, 22, 46, 20, -74); car.rotation.x = -.35; g.add(car, M('box', '#9fc6d4', 14.4, 4, 16, 46, 23, -74));
+  }
+  if (kind === 'ferry') g.add(M('box', '#e9ecef', 70, 18, 36, 50, 9, -34), M('box', '#2f6fb0', 74, 4, 40, 50, 20, -34), M('box', '#9fc6d4', 60, 6, 1, 50, 10, -15.6));
+  if (kind === 'bus') g.add(M('box', '#3e7d5e', 30, 1.6, 12, 22, 24, -4), M('cyl8', '#5c4630', .8, 24, .8, 9, 12, -9), M('cyl8', '#5c4630', .8, 24, .8, 35, 12, -9), M('box', '#b0895c', 22, 2, 5, 22, 7, -6));
+  g.position.set(x, 0, y); scene.add(g); const m = bakeDeep(g, VCMAT); if (m) addOutline(m, .7);
+}
 const VCMAT = new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: gradient });
 
 /* ---------- clouds: drift around the edges of the zone, never over the play area ---------- */
 const clouds: THREE.Mesh[] = [];
 function buildClouds() {
   const cm = new THREE.MeshToonMaterial({ color: '#ffffff', gradientMap: gradient, transparent: true, opacity: .94 });
-  const W = W3.w, H = W3.h; const spots = [[-260, 200], [-320, 900], [-240, 1600], [2300, 300], [2380, 1050], [2260, 1750], [400, -300], [1300, -340], [700, 2150], [1600, 2120]];
+  const W = W3.w, H = W3.h, kx = W / 2000, kz = H / 1800; const spots = [[-260, 200], [-320, 900], [-240, 1600], [2300, 300], [2380, 1050], [2260, 1750], [400, -300], [1300, -340], [700, 2150], [1600, 2120]].map(([x, z]) => [x * kx, z * kz]);
   spots.forEach(([x, z], i) => {
     const g = G(); const n = 5 + (i % 3);
     for (let k = 0; k < n; k++) { const r = 34 + ((i * 7 + k * 13) % 30); g.add(M('ico', '#ffffff', r, r * .62, r * .9, (k - n / 2) * 42 + ((k * 17) % 20), ((k * 5) % 3) * 8, ((k * 11) % 5) * 12 - 24)); }
@@ -145,10 +178,24 @@ export function updateLabels() {
     const th = g.userData.theta, ox = th != null ? 100 * Math.cos(th) : 0, oz = th != null ? 100 * Math.sin(th) : 0;
     place(el, g.position.x + ox, LABEL_H[id], g.position.z + oz);
   }
-  for (const ex of ZONE.exits) {
-    const el = LBL['exit-' + ex.kind]; const at = (ZONE as any)[ex.at]; const ic = ex.kind === 'bus' ? 'BAS' : (save.lang === 'bm' ? 'FERI' : 'FERRY');
+  ZONE.exits.forEach((ex, i) => {
+    const el = LBL['exit-' + i]; const ic = L().travelIc[ex.kind];
     const html = `<span class="ic">${ic}</span>${esc(ex.label[save.lang])}`; if (el._h !== html) { el.innerHTML = html; el._h = html; }
-    const [x, y] = exitPost(ex, at); place(el, x, 44, y);
+    const [x, y] = exitPost(ex); place(el, x, 44, y);
+  });
+  if (LBL.soon) { const html = `<span class="ic">${L().soon}</span>${esc(L().soonZone)}`; if (LBL.soon._h !== html) { LBL.soon.innerHTML = html; LBL.soon._h = html; } place(LBL.soon, ZONE.start[0], 90, ZONE.start[1] - 300); }
+  // the other zones: name and lock (or open) on the land beyond; the land turns green once any of them opens
+  const anyOpen = (W3.areas || []).some((a: any) => zoneState(a.id) === 'open');
+  if (hazeMat) hazeMat.color.set(anyOpen ? HAZE_OPEN : HAZE_LOCK);
+  for (const a of W3.areas || []) {
+    const el = LBL['area-' + a.id]; const st = zoneState(a.id), t = L();
+    const need = unlockNeed(), icon = st === 'open' ? '✓' : st === 'locked' ? '🔒' : '…';
+    const html = `<span class="ic">${icon}</span>${esc(a.name[save.lang])}` + (st === 'locked' ? `<small> ${need.have}/${need.n}</small>` : st === 'soon' ? `<small> ${esc(t.soonLock)}</small>` : '');
+    if (el._h !== html) { el.innerHTML = html; el._h = html; el.className = 'lbl3 sign area' + (st === 'open' ? '' : ' lock'); }
+    // pinned to the screen edge when the zone is off-screen, so the name is always there to tap toward
+    const [sx, sy, sz] = project(a.at[0], 70, a.at[1]);
+    const cx = Math.min(view.w - 110, Math.max(110, sx)), cy = Math.min(view.h - 180, Math.max(150, sy));
+    el.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-100%)`; el.style.opacity = sz > 1 ? '0' : '1';
   }
   for (const n of npcs) {
     const el = LBL['npc-' + n.id];
@@ -158,7 +205,9 @@ export function updateLabels() {
   if (player.path.length && player.target) { destMark.visible = true; destMark.position.set(player.target[0], 1, player.target[1]); const s = 1 + Math.sin(performance.now() / 250) * .12; destMark.scale.set(s, s, s); }
   else destMark.visible = false;
 }
-const exitPost = (ex: any, at: [number, number]): [number, number] => ex.kind === 'bus' ? [at[0] - 60, at[1] - 10] : [at[0] + 40, at[1]];
+/** where an exit's sign post stands; `at` is a zone key ('start', 'ferryStop') or a point */
+export const exitPoint = (ex: Exit): [number, number] => typeof ex.at === 'string' ? (ZONE as any)[ex.at] : ex.at;
+const exitPost = (ex: Exit): [number, number] => { const at = exitPoint(ex); return ex.kind === 'bus' ? [at[0] - 60, at[1] - 10] : [at[0] + 40, at[1]]; };
 
 /* ---------- reveal state ---------- */
 export const motion = { reduced: false };
@@ -198,26 +247,29 @@ export function updateWorld(dt: number, t: number) {
     prevN[i] = [n.x, n.y]; poseChar(m, n.walk, n.moving, t + i);
   });
   catMeshes.forEach((c, i) => { if (c.visible) c.userData.tail.rotation.z = Math.sin(t * 3 + i) * .5; });
-  ferryT = (ferryT + dt * .018) % 1; const F = ZONE.ferryLine; let tot = 0; const seg: number[] = [];
+  const F = ZONE.ferryLine; if (ferryG && F.length > 1) {
+  ferryT = (ferryT + dt * .018) % 1; let tot = 0; const seg: number[] = [];
   for (let i = 1; i < F.length; i++) { const d = Math.hypot(F[i][0] - F[i - 1][0], F[i][1] - F[i - 1][1]); seg.push(d); tot += d; }
   const pp = ferryT < .5 ? ferryT * 2 : 2 - ferryT * 2; let want = pp * tot, si = 0; while (si < seg.length - 1 && want > seg[si]) { want -= seg[si]; si++; }
   const a = F[si], b = F[si + 1], kk = Math.min(1, want / seg[si]); const fdir = ferryT < .5 ? 1 : -1;
   ferryG.position.set(a[0] + (b[0] - a[0]) * kk, -3 + Math.sin(t * 1.6) * .6, a[1] + (b[1] - a[1]) * kk);
-  ferryG.rotation.y = Math.atan2(-(b[1] - a[1]) * fdir, (b[0] - a[0]) * fdir);
+  ferryG.rotation.y = Math.atan2(-(b[1] - a[1]) * fdir, (b[0] - a[0]) * fdir); }
   (waterFx.material as THREE.ShaderMaterial).uniforms.t.value = motion.reduced ? 0 : t;
   for (const c of clouds) { const [hx] = c.userData.home; c.position.x = hx + Math.sin(t * c.userData.speed * .004 + hx) * 140; }
 }
 
 export function buildWorld(groundT: THREE.Texture, seaT: THREE.Texture) {
   document.getElementById('app')!.insertBefore(labelLayer, document.querySelector('.hud-top'));
-  buildIsland(groundT, seaT); buildHouses(); buildTrees(); buildStations(); buildCats(); buildFerry(); buildClouds();
-  for (const ex of ZONE.exits) { const [x, y] = exitPost(ex, (ZONE as any)[ex.at]); post(x, y); mkLabel('exit-' + ex.kind, 'sign'); }
+  buildIsland(groundT, seaT); buildHouses(); buildTrees(); buildStations(); buildCats(); if (ZONE.ferryLine.length > 1) buildFerry(); buildClouds();
+  if (ZONE.placeholder) mkLabel('soon', 'sign soon');
+  ZONE.exits.forEach((ex, i) => { const [x, y] = exitPost(ex); post(x, y, ZONE.placeholder ? ex.kind : ''); mkLabel('exit-' + i, 'sign'); });
   for (const id of IDS) mkLabel(id, 'lm');
+  for (const a of W3.areas || []) mkLabel('area-' + a.id, 'sign area');
   for (const n of npcs) { mkLabel('npc-' + n.id, 'bub'); const m = makeChar(n.look, n.outfit, false); m.scale.setScalar(.88); scene.add(m); npcMeshes.push(m); }
   destMark = new THREE.Mesh(new THREE.RingGeometry(9, 12, 32), new THREE.MeshBasicMaterial({ color: '#b8455f', transparent: true, opacity: .85, depthWrite: false }));
   destMark.rotation.x = -Math.PI / 2; scene.add(destMark);
   rebuildPlayer(); syncReveal(); uploadReveal();
 }
 export { camera };
-export const exitAt = (kind: string) => { const ex = ZONE.exits.find(e => e.kind === kind); return ex ? exitPost(ex, (ZONE as any)[ex.at]) : null; };
+export const exitAt = (i: number) => exitPost(ZONE.exits[i]);
 export const _L = L;

@@ -80,7 +80,7 @@ export function canvasTex(w: number, h: number, draw: (g: CanvasRenderingContext
 
 /* ---------- camera rig ---------- */
 export const camS = { tx: player.x, tz: player.y, yaw: 0, yawT: 0, dist: 1250, distT: 1250, pitch: .95, panX: 0, panZ: 0 };
-export const ZOOM = { min: 280, max: 4800 };
+export const ZOOM = { min: 280, max: 7000 };
 export function updateCamera(dt: number) {
   const k = Math.min(1, dt * 7);
   camS.yaw += (camS.yawT - camS.yaw) * k; camS.dist += (camS.distT - camS.dist) * k;

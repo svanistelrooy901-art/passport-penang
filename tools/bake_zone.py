@@ -390,8 +390,11 @@ def neighbour_land(tol=2.5):
 
 
 land = neighbour_land()
-json.dump({'w': W, 'h': H, 'angle': ang, 'coast': polys, 'decks': decks, 'houses': houses, 'trees': trees, 'land': land}, open(f'{REPO}/content/zones/george-town.world3d.json', 'w'), separators=(',', ':'))
-print('neighbour land rings', len(land), [len(r) for r in land][:8])
+# the other zones, as areas on the land beyond this one (names and places from content/overworld.json)
+areas = [{'id': z['id'], 'name': z['name'], 'at': [round(v, 1) for v in P(*z['lonlat'])]}
+         for z in json.load(open(f'{REPO}/content/overworld.json'))['zones'] if z['id'] != 'george-town']
+json.dump({'w': W, 'h': H, 'angle': ang, 'coast': polys, 'decks': decks, 'houses': houses, 'trees': trees, 'land': land, 'areas': areas}, open(f'{REPO}/content/zones/george-town.world3d.json', 'w'), separators=(',', ':'))
+print('neighbour land rings', len(land), [len(r) for r in land][:8], 'areas', [a['id'] for a in areas])
 print('houses', len(houses), 'trees', len(trees), 'coast', [len(p) for p in polys], 'decks', len(decks))
 
 # ---------- merge computed fields into the zone file ----------

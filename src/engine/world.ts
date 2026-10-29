@@ -1,13 +1,14 @@
 /* Zone world: raised diorama island from the approved coastline, instanced shophouses and trees,
    station models, cats, ferry, signposts, DOM labels and the reveal state. */
 import * as THREE from 'three';
-import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline } from './core';
+import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, camera, addOutline, view } from './core';
 import { bakeDeep, bakeChildren, disposeTree } from './bake';
 import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT, stationMat } from './stations';
 import { makeChar, poseChar, faceTo } from './character';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { ZONE, ZONE_ID, W3, IDS, STATIONS, type Exit } from '../content';
 import { save, tierOf, catsIn } from '../game/save';
+import { zoneState, unlockNeed } from '../game/zones';
 import { player, npcs } from '../game/state';
 import { L } from '../i18n';
 
@@ -15,7 +16,8 @@ const PASTEL = ['#f2e3a1', '#bfe0d2', '#f3c9b8', '#c9d9ee', '#f5efe1', '#e7c98e'
 const ROOFC = ['#c65b3c', '#b94e33', '#d06a45', '#a9472f', '#c97a4c'];
 export const landmarkGroups: Record<string, THREE.Group> = {};
 export const catMeshes: THREE.Group[] = [];
-export let ferryG: THREE.Group; let waterFx: THREE.Mesh; let destMark: THREE.Mesh;
+export let ferryG: THREE.Group; let waterFx: THREE.Mesh; let destMark: THREE.Mesh; let hazeMat: THREE.MeshBasicMaterial | null = null;
+const HAZE_LOCK = '#b9bcb6', HAZE_OPEN = '#bcd9b5';
 export let playerMesh: THREE.Group; export const npcMeshes: THREE.Group[] = [];
 
 const facadeTex = canvasTex(64, 64, (g, w, h) => {
@@ -51,7 +53,7 @@ function buildIsland(groundT: THREE.Texture, seaT: THREE.Texture) {
   }
   // the rest of Penang: flat and pale just below the island's top, so it reads as land beyond this zone
   // (faded on purpose; walking there is not possible, the exits and bus or ferry stops carry you across)
-  const haze = new THREE.MeshBasicMaterial({ color: '#bcd9b5', transparent: true, opacity: .85, depthWrite: false, side: THREE.DoubleSide });
+  const haze = hazeMat = new THREE.MeshBasicMaterial({ color: HAZE_LOCK, transparent: true, opacity: .85, depthWrite: false, side: THREE.DoubleSide });
   const shapes = (W3.land || []).map((ring: number[][]) => { const g = new THREE.ShapeGeometry(new THREE.Shape(ring.map(p => new THREE.Vector2(p[0], p[1])))); g.rotateX(Math.PI / 2); return g; });
   if (shapes.length) { const m = new THREE.Mesh(mergeGeometries(shapes), haze); m.position.y = -.6; m.renderOrder = -1; scene.add(m); }
   const plank = mat('#a27a4f');
@@ -167,6 +169,19 @@ export function updateLabels() {
     const [x, y] = exitPost(ex); place(el, x, 44, y);
   });
   if (LBL.soon) { const html = `<span class="ic">${L().soon}</span>${esc(L().soonZone)}`; if (LBL.soon._h !== html) { LBL.soon.innerHTML = html; LBL.soon._h = html; } place(LBL.soon, ZONE.start[0], 90, ZONE.start[1] - 300); }
+  // the other zones: name and lock (or open) on the land beyond; the land turns green once any of them opens
+  const anyOpen = (W3.areas || []).some((a: any) => zoneState(a.id) === 'open');
+  if (hazeMat) hazeMat.color.set(anyOpen ? HAZE_OPEN : HAZE_LOCK);
+  for (const a of W3.areas || []) {
+    const el = LBL['area-' + a.id]; const st = zoneState(a.id), t = L();
+    const need = unlockNeed(), icon = st === 'open' ? '✓' : st === 'locked' ? '🔒' : '…';
+    const html = `<span class="ic">${icon}</span>${esc(a.name[save.lang])}` + (st === 'locked' ? `<small> ${need.have}/${need.n}</small>` : st === 'soon' ? `<small> ${esc(t.soonLock)}</small>` : '');
+    if (el._h !== html) { el.innerHTML = html; el._h = html; el.className = 'lbl3 sign area' + (st === 'open' ? '' : ' lock'); }
+    // pinned to the screen edge when the zone is off-screen, so the name is always there to tap toward
+    const [sx, sy, sz] = project(a.at[0], 70, a.at[1]);
+    const cx = Math.min(view.w - 110, Math.max(110, sx)), cy = Math.min(view.h - 180, Math.max(150, sy));
+    el.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-100%)`; el.style.opacity = sz > 1 ? '0' : '1';
+  }
   for (const n of npcs) {
     const el = LBL['npc-' + n.id];
     if (n.bubble > 0) { const txt = n.say[save.lang]; if (el._h !== txt) { el.textContent = txt; el._h = txt; } place(el, n.x, 58, n.y); el.style.opacity = String(Math.min(1, n.bubble)); }
@@ -234,6 +249,7 @@ export function buildWorld(groundT: THREE.Texture, seaT: THREE.Texture) {
   if (ZONE.placeholder) mkLabel('soon', 'sign soon');
   ZONE.exits.forEach((ex, i) => { const [x, y] = exitPost(ex); post(x, y, ZONE.placeholder ? ex.kind : ''); mkLabel('exit-' + i, 'sign'); });
   for (const id of IDS) mkLabel(id, 'lm');
+  for (const a of W3.areas || []) mkLabel('area-' + a.id, 'sign area');
   for (const n of npcs) { mkLabel('npc-' + n.id, 'bub'); const m = makeChar(n.look, n.outfit, false); m.scale.setScalar(.88); scene.add(m); npcMeshes.push(m); }
   destMark = new THREE.Mesh(new THREE.RingGeometry(9, 12, 32), new THREE.MeshBasicMaterial({ color: '#b8455f', transparent: true, opacity: .85, depthWrite: false }));
   destMark.rotation.x = -Math.PI / 2; scene.add(destMark);

@@ -196,6 +196,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 button.zone{border:0;font:inherit;text-align:left;cursor:pointer}
 .zone b{display:flex;align-items:center;gap:6px}
 .lbl3.sign.soon{background:#b8455f}
+.lbl3.sign.area.lock{background:#6f746d}.lbl3.sign.area small{font-weight:800;opacity:.85}
 .dest{display:flex;align-items:center;gap:12px;padding:10px;border-radius:16px;background:var(--paper);border:1px solid #e2d6bb;text-align:left;font:inherit;color:inherit;width:100%;cursor:pointer}
 .dest img{width:64px;height:64px;object-fit:contain;flex-shrink:0}
 .dest.lock{opacity:.7;cursor:default}.dest.lock img{filter:grayscale(1) sepia(.3)}

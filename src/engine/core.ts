@@ -12,8 +12,8 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadow
 
 export const scene = new THREE.Scene();
 scene.background = new THREE.Color('#cfe8e2');
-scene.fog = new THREE.Fog('#d7ebe3', 2000, 4600);
-export const camera = new THREE.PerspectiveCamera(32, 1, 5, 6000);
+scene.fog = new THREE.Fog('#d7ebe3', 2600, 9000); // far land (the rest of Penang) fades into this haze
+export const camera = new THREE.PerspectiveCamera(32, 1, 5, 14000);
 const PI = Math.PI; // r155+ uses physical light units; scale to match the approved prototype look
 export const hemi = new THREE.HemisphereLight('#fff0d6', '#5c837d', .52 * PI); scene.add(hemi);
 export const sun = new THREE.DirectionalLight('#ffd9a8', 1.0 * PI);
@@ -80,7 +80,7 @@ export function canvasTex(w: number, h: number, draw: (g: CanvasRenderingContext
 
 /* ---------- camera rig ---------- */
 export const camS = { tx: player.x, tz: player.y, yaw: 0, yawT: 0, dist: 1250, distT: 1250, pitch: .95, panX: 0, panZ: 0 };
-export const ZOOM = { min: 280, max: 1700 };
+export const ZOOM = { min: 280, max: 4800 };
 export function updateCamera(dt: number) {
   const k = Math.min(1, dt * 7);
   camS.yaw += (camS.yawT - camS.yaw) * k; camS.dist += (camS.distT - camS.dist) * k;

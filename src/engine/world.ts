@@ -5,6 +5,7 @@ import { scene, patch, gradient, mat, M, G, GEO, canvasTex, REV, REVN, project, 
 import { bakeDeep, bakeChildren, disposeTree } from './bake';
 import { BUILDERS, MODEL_OFFSET, LABEL_H, SAT, stationMat } from './stations';
 import { makeChar, poseChar, faceTo } from './character';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { ZONE, ZONE_ID, W3, IDS, STATIONS, type Exit } from '../content';
 import { save, tierOf, catsIn } from '../game/save';
 import { player, npcs } from '../game/state';
@@ -48,6 +49,11 @@ function buildIsland(groundT: THREE.Texture, seaT: THREE.Texture) {
     for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / W, 1 - pos.getZ(i) / H);
     const m = new THREE.Mesh(g, [groundMat, side]); m.receiveShadow = true; scene.add(m);
   }
+  // the rest of Penang: flat and pale just below the island's top, so it reads as land beyond this zone
+  // (faded on purpose; walking there is not possible, the exits and bus or ferry stops carry you across)
+  const haze = new THREE.MeshBasicMaterial({ color: '#bcd9b5', transparent: true, opacity: .85, depthWrite: false, side: THREE.DoubleSide });
+  const shapes = (W3.land || []).map((ring: number[][]) => { const g = new THREE.ShapeGeometry(new THREE.Shape(ring.map(p => new THREE.Vector2(p[0], p[1])))); g.rotateX(Math.PI / 2); return g; });
+  if (shapes.length) { const m = new THREE.Mesh(mergeGeometries(shapes), haze); m.position.y = -.6; m.renderOrder = -1; scene.add(m); }
   const plank = mat('#a27a4f');
   for (const poly of W3.decks) {
     const shape = new THREE.Shape(poly.map((p: number[]) => new THREE.Vector2(p[0], p[1])));

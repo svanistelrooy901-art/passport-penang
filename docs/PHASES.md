@@ -21,7 +21,7 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 
 **Exit:** owner sign-off.
 
-## Phase 1: Look, feel and phone performance ← current
+## Phase 1: Look, feel and phone performance ✅ signed off
 - Toon outlines, warmer lighting, sky and soft clouds; better Khoo Kongsi and Chowrasta models
 - Merge static geometry and tune shadows so mid-range phones hold a steady frame rate
 - First-time tutorial (tap to walk, find a station, earn a stamp)
@@ -39,12 +39,21 @@ Move the approved 3D prototype into this repo as a maintainable game with identi
 
 **Exit:** owner sign-off.
 
-## Phase 2: George Town complete
-- Bigger George Town map (re-bake a larger area from the approved coastline)
-- +7 stations, each with 3 games + a sourced Kisah: Armenian Street murals, Kapitan Keling Mosque, Sri Mahamariamman Temple, Goddess of Mercy Temple, Pinang Peranakan Mansion, Cheong Fatt Tze (Blue) Mansion, Esplanade & City Hall
-- More cats and NPCs with local tips; Heritage Hunter badge for the zone
+## Phase 2: George Town complete ← current
+- +7 stations, each with 3 games + a sourced Kisah: Armenian Street, Kapitan Keling Mosque, Sri Mahamariamman Temple, Goddess of Mercy Temple, Pinang Peranakan Mansion, Cheong Fatt Tze (Blue) Mansion, Esplanade & City Hall
+- Zone re-baked from the approved coastline by `tools/bake_zone.py` (no change to approved geography). The existing map already covers the whole heritage core, so it was not enlarged; instead the dense Pitt Street cluster is spread slightly (interpretive placement, directions links use real coordinates)
+- 3D models for the new stations; painted station pictures generated in the same style as the original five (`tools/import_sprites.py`)
+- More cats (12) and NPCs with local tips (6); Heritage Hunter badge card in the Pasport
+- AdSense placeholders on reading screens only: station sheet, Kisah page, Pasport (`src/ads.ts`)
 
-**QA:** owner reviews every new fact, question and translation; play every station.
+**QA checklist**
+- [ ] Review every new fact, quiz answer and BM/EN translation (each station's Kisah lists its sources); mark `review.owner` approved or send corrections
+- [ ] Play all 12 stations to gold on a phone: games work, stamps, Kisah opens, directions link opens the right place
+- [ ] New models read well up close; the Pitt Street cluster (Kapitan Keling, Sri Mahamariamman, Kuan Yin, Armenian Street, Khoo Kongsi) is easy to tell apart
+- [ ] New painted station pictures sit well next to the original five
+- [ ] Place-of-worship stations carry the respect note; tone is right
+- [ ] Ad placeholders appear only on the station sheet, Kisah and Pasport, never over the game
+- [ ] Cats (12) and the new NPC tips; Heritage Hunter badge shows progress in the Pasport
 
 ## Phase 3: Overworld and travel
 - Island + mainland travel map built from the approved geography

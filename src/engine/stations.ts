@@ -1,14 +1,15 @@
 /* Station models (toon miniature). Each builder returns a group in local units around the station anchor.
-   Detailed: Komtar, Clan Jetties, Fort Cornwallis. Simplified for now: Khoo Kongsi, Chowrasta. */
+   The original five live here; Phase 2 stations are in stations2.ts. */
 import * as THREE from 'three';
 import { M, G, GEO, mat, canvasTex, patch, gradient, type Sat } from './core';
 import { ZONE } from '../content';
+import { BUILDERS2, MODEL_OFFSET2, LABEL_H2 } from './stations2';
 
 export const SAT: Record<string, Sat> = {};
 export const satFor = (id: string) => SAT[id] || (SAT[id] = { k: id, u: { value: .38 } });
 const towerTex = canvasTex(16, 256, (g, w) => { for (let i = 0; i < 64; i++) { g.fillStyle = '#ece5d6'; g.fillRect(0, i * 4, w, 4); g.fillStyle = '#6d7a84'; g.fillRect(0, i * 4 + 2.6, w, 1.4); } }, true);
 
-function palm(g: THREE.Group, x: number, z: number, h: number, o: any) {
+export function palm(g: THREE.Group, x: number, z: number, h: number, o: any) {
   g.add(M('cyl8', '#8a6a44', 1.6, h, 1.6, x, h / 2, z, o));
   for (let i = 0; i < 6; i++) { const l = M('box', '#4f8f4a', 3, 1, 15, x, h, z, o); l.rotation.y = i * Math.PI / 3; l.rotation.x = .35; l.position.x += Math.sin(i * Math.PI / 3) * 6; l.position.z += Math.cos(i * Math.PI / 3) * 6; g.add(l); }
 }
@@ -126,7 +127,7 @@ const VC: Record<string, THREE.Material> = {};
 export function stationMat(id: string) {
   return VC[id] || (VC[id] = patch(new THREE.MeshToonMaterial({ vertexColors: true, gradientMap: gradient }), satFor(id).u));
 }
-export const BUILDERS: Record<string, () => THREE.Group> = { komtar, jetty, fort, kho, chowrasta };
+export const BUILDERS: Record<string, () => THREE.Group> = { komtar, jetty, fort, kho, chowrasta, ...BUILDERS2 };
 /* offset of the model centre from the ground anchor; 'trigger' places the jetty from its shore point out to sea */
-export const MODEL_OFFSET: Record<string, [number, number] | 'trigger'> = { komtar: [0, -58], jetty: 'trigger', fort: [0, -62], kho: [0, -52], chowrasta: [0, -50] };
-export const LABEL_H: Record<string, number> = { komtar: 300, jetty: 46, fort: 104, kho: 86, chowrasta: 64 };
+export const MODEL_OFFSET: Record<string, [number, number] | 'trigger'> = { komtar: [0, -58], jetty: 'trigger', fort: [0, -62], kho: [0, -52], chowrasta: [0, -50], ...MODEL_OFFSET2 };
+export const LABEL_H: Record<string, number> = { komtar: 300, jetty: 46, fort: 104, kho: 96, chowrasta: 64, ...LABEL_H2 };

@@ -18,13 +18,20 @@ const run = async (vp, tag) => {
   await p.click('#start'); await p.waitForTimeout(1500); await p.screenshot({ path: `${OUT}/${tag}-2-world.png` });
   // Phase 1: tutorial coach shows for a new player; settings change quality + language; draw-call budget
   if (await p.isHidden('#coach')) errs.push(`${tag} tutorial coach not shown`);
-  const calls = await p.evaluate(() => window.__pp.calls()); if (calls > 120) errs.push(`${tag} draw calls ${calls} > 120`);
+  const calls = await p.evaluate(() => window.__pp.calls()), budget = tag === 'phone' ? 80 : 160; if (calls > budget) errs.push(`${tag} draw calls ${calls} > ${budget}`);
   await p.click('#btn-set'); await p.waitForSelector('[data-q="low"]'); await p.click('[data-q="low"]');
   if (await p.evaluate(() => window.__pp.quality.name) !== 'low') errs.push(`${tag} quality did not switch to low`);
   await p.click('[data-q="auto"]'); await p.click('[data-lang="en"]');
   if ((await p.textContent('#sheet-title')).trim() !== 'Settings') errs.push(`${tag} language switch failed`);
   await p.screenshot({ path: `${OUT}/${tag}-2b-settings.png` }); await p.click('#x');
-  await p.click('#tut-skip'); if (!(await p.isHidden('#coach'))) errs.push(`${tag} tutorial skip failed`);
+  // Phase 2: every trigger, cat and NPC stands on walkable ground; a new station plays; ad placeholder shows
+  const bad = await p.evaluate(() => { const q = window.__pp, z = q.zone, out = []; for (const [k, [x, y]] of Object.entries(z.triggers)) if (!q.walkable(x, y)) out.push('trigger ' + k); z.cats.forEach(([x, y], i) => { if (!q.walkable(x, y)) out.push('cat ' + i); }); z.npcs.forEach(n => { if (!q.walkable(n.x, n.y)) out.push('npc ' + n.id); }); return out; });
+  if (bad.length) errs.push(`${tag} not walkable: ${bad.join(', ')}`);
+  await p.click('#tut-skip');
+  await p.evaluate(() => window.__pp.openStation('kuanyin')); await p.waitForSelector('.game[data-g="1"]');
+  if (!(await p.$('.ad[data-ad="station"]'))) errs.push(`${tag} station ad slot missing`);
+  await p.click('.game[data-g="1"]'); await p.click('.opt[data-i="0"]'); await p.click('#fin'); await p.click('#bs');
+  await p.click('#x'); if (!(await p.isHidden('#coach'))) errs.push(`${tag} tutorial skip failed`);
   await p.evaluate(() => window.__pp.openStation('komtar')); await p.waitForSelector('.game[data-g="0"]');
   // find
   await p.click('.game[data-g="0"]'); await p.waitForSelector('#fimg');

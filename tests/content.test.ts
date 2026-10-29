@@ -21,6 +21,7 @@ describe('approved geography is untouched', () => {
 });
 
 describe('stations', () => {
+  it('route order is unique', () => { const o = stations.map(s => s.order); expect(new Set(o).size).toBe(o.length); });
   it('every zone station has a content file', () => { for (const id of zone.stations) expect(stations.find(s => s.id === id), id).toBeTruthy(); });
   for (const st of stations) describe(st.id, () => {
     it('has BM and EN text', () => { for (const k of ['name', 'category', 'blurb']) expect(both(st[k]), k).toBeTruthy(); });
@@ -41,11 +42,16 @@ describe('stations', () => {
       expect(k.look.bm.length).toBe(k.look.en.length);
       expect(k.src.length).toBeGreaterThan(0); for (const [, u] of k.src) expect(u).toMatch(/^https:\/\//);
     });
-    it('has an official link, coordinates and artwork', () => {
-      expect(st.official.url).toMatch(/^https:\/\//);
+    it('has coordinates, artwork and (when set) an https official link', () => {
+      if (st.official) expect(st.official.url).toMatch(/^https:\/\//);
       const [lon, lat] = st.coordinates; expect(lon).toBeGreaterThan(100); expect(lon).toBeLessThan(100.6); expect(lat).toBeGreaterThan(5.1); expect(lat).toBeLessThan(5.6);
       expect(existsSync(`public/zones/${st.zone}/sprites/${st.id}.webp`)).toBe(true); expect(existsSync(`public/zones/${st.zone}/sprites/${st.id}-sketch.webp`)).toBe(true);
       for (const key of ['landmarks', 'triggers', 'sprites']) expect(zone[key][st.id], key).toBeTruthy();
     });
+    it('find-game hotspots sit inside the sprite', () => {
+      const [w, h] = zone.sprites[st.id];
+      for (const g of st.games.filter((g: any) => g.type === 'find')) for (const t of g.targets) for (const [x, y] of t.pts) { expect(x, t.en).toBeGreaterThanOrEqual(0); expect(x, t.en).toBeLessThanOrEqual(w); expect(y, t.en).toBeGreaterThanOrEqual(0); expect(y, t.en).toBeLessThanOrEqual(h); }
+    });
+    it('records fact-check date and owner review state', () => { expect(st.factsChecked).toMatch(/^\d{4}-\d{2}-\d{2}$/); expect(['pending', 'approved']).toContain(st.review.owner); });
   });
 });

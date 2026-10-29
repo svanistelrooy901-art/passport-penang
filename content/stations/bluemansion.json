@@ -1,0 +1,226 @@
+{
+ "id": "bluemansion",
+ "zone": "george-town",
+ "order": 2,
+ "coordinates": [
+  100.334947,
+  5.421408
+ ],
+ "name": {
+  "bm": "Rumah Agam Cheong Fatt Tze",
+  "en": "Cheong Fatt Tze Mansion"
+ },
+ "category": {
+  "bm": "Warisan",
+  "en": "Heritage"
+ },
+ "blurb": {
+  "bm": "Rumah Agam Biru di Lebuh Leith, dicat dengan kapur dan pewarna nila.",
+  "en": "The Blue Mansion on Leith Street, coloured with lime and indigo dye."
+ },
+ "official": {
+  "url": "https://www.malaysia.travel/explore/cheong-fatt-tze",
+  "label": {
+   "bm": "Info pelancongan ↗",
+   "en": "Tourism info ↗"
+  }
+ },
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Jendela kayu",
+     "en": "Wooden louvre windows",
+     "spot": "windows",
+     "pts": [
+      [
+       94,
+       80,
+       12
+      ],
+      [
+       109,
+       79,
+       12
+      ],
+      [
+       129,
+       81,
+       12
+      ],
+      [
+       147,
+       82,
+       12
+      ],
+      [
+       182,
+       86,
+       12
+      ],
+      [
+       197,
+       88,
+       12
+      ],
+      [
+       39,
+       119,
+       12
+      ],
+      [
+       211,
+       156,
+       12
+      ]
+     ]
+    },
+    {
+     "bm": "Bumbung genting",
+     "en": "Tiled roof",
+     "spot": "roof",
+     "pts": [
+      [
+       149,
+       42,
+       30
+      ],
+      [
+       68,
+       82,
+       18
+      ],
+      [
+       228,
+       99,
+       18
+      ]
+     ]
+    },
+    {
+     "bm": "Pintu utama",
+     "en": "Main door",
+     "spot": "door",
+     "pts": [
+      [
+       140,
+       123,
+       14
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz warna",
+    "en": "Colour quiz"
+   },
+   "ask": {
+    "bm": "Kenapa Rumah Agam Cheong Fatt Tze berwarna biru?",
+    "en": "Why is the Cheong Fatt Tze Mansion blue?"
+   },
+   "opts": [
+    {
+     "bm": "Kapur dicampur pewarna nila (indigo)",
+     "en": "Lime mixed with indigo dye",
+     "ok": 1
+    },
+    {
+     "bm": "Cat dari kilang di Eropah",
+     "en": "Paint from a factory in Europe"
+    },
+    {
+     "bm": "Batu biru dari laut",
+     "en": "Blue stones from the sea"
+    },
+    {
+     "bm": "Dicat semula untuk sebuah filem",
+     "en": "Repainted for a film"
+    }
+   ],
+   "why": {
+    "bm": "Betul! Kapur dicampur pewarna nila. Dinding kapur menyerap lembapan dan membantu rumah kekal sejuk.",
+    "en": "Right! Lime mixed with indigo dye. The lime walls soak up moisture and help keep the house cool."
+   }
+  },
+  {
+   "type": "order",
+   "title": {
+    "bm": "Garis masa",
+    "en": "Timeline"
+   },
+   "items": [
+    {
+     "bm": "1897 · Mula dibina",
+     "en": "1897 · Building starts"
+    },
+    {
+     "bm": "1904 · Rumah agam siap",
+     "en": "1904 · The mansion is finished"
+    },
+    {
+     "bm": "2000 · Anugerah pemuliharaan UNESCO",
+     "en": "2000 · UNESCO conservation award"
+    }
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Saudagar Cheong Fatt Tze membina rumah agam ini di Lebuh Leith. Ramai memanggilnya Rumah Agam Biru.",
+   "en": "The merchant Cheong Fatt Tze built this mansion on Leith Street. Many people call it the Blue Mansion."
+  },
+  "facts": {
+   "bm": [
+    "Pembinaan bermula pada 1897 dan siap pada 1904.",
+    "Ada 38 bilik, 5 halaman berlantai granit dan 220 jendela kayu.",
+    "Warna birunya datang daripada kapur yang dicampur pewarna nila (indigo).",
+    "Selepas dipulihara, ia menerima anugerah pemuliharaan warisan UNESCO pada 2000."
+   ],
+   "en": [
+    "Building started in 1897 and finished in 1904.",
+    "It has 38 rooms, 5 granite-paved courtyards and 220 wooden louvre windows.",
+    "The blue comes from lime mixed with indigo dye.",
+    "After its restoration it won a UNESCO heritage conservation award in 2000."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Dinding biru nila",
+    "Jendela kayu berbilah",
+    "Halaman dalam berlantai granit"
+   ],
+   "en": [
+    "The indigo-blue walls",
+    "Wooden louvre windows",
+    "Granite-paved inner courtyards"
+   ]
+  },
+  "fun": {
+   "bm": "Rumah agam ini muncul dalam filem, termasuk Crazy Rich Asians.",
+   "en": "The mansion has appeared in films, including Crazy Rich Asians."
+  },
+  "src": [
+   [
+    "Wikipedia: Cheong Fatt Tze Mansion",
+    "https://en.wikipedia.org/wiki/Cheong_Fatt_Tze_Mansion"
+   ],
+   [
+    "Tourism Malaysia: Cheong Fatt Tze",
+    "https://www.malaysia.travel/explore/cheong-fatt-tze"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-28",
+ "review": {
+  "owner": "pending"
+ }
+}

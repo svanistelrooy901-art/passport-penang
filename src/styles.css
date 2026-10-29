@@ -184,3 +184,11 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 .seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
 .seg.wide button{flex:1}
 @media (prefers-reduced-motion:reduce){.coach,.quest.pulse{animation:none}}
+/* ad slots: clearly labelled, separated from game content */
+.ad{display:flex;flex-direction:column;gap:6px;margin-top:6px;padding:10px;border-radius:14px;background:#f3ecdc;border:1px solid #e2d6bb}
+.ad-l{font-size:10px;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:#8d7c5c}
+.ad.ph .ad-box{display:grid;place-items:center;min-height:250px;max-width:300px;width:100%;margin:0 auto;border:2px dashed #c9bea4;border-radius:10px;color:#a89a7c;font-weight:900;font-size:13px}
+.badge{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--paper);border:1px solid #e2d6bb}
+.badge.on{background:#fff4d6;border-color:#e2a93f}
+.badge b{font-size:14px}
+.sheet > *{flex-shrink:0} /* tall sheets scroll instead of squashing the artwork */

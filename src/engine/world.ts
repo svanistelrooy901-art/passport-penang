@@ -172,7 +172,7 @@ export function syncReveal() {
 export function uploadReveal() {
   let n = 0;
   for (const k of ['start', ...IDS]) {
-    const r = revState[k] || 0; if (r <= 0) continue;
+    const r = revState[k] || 0; if (r <= 0) continue; if (n >= REV.value.length) break;
     const p = k === 'start' ? [ZONE.start[0], ZONE.start[1] - 60] : [ZONE.landmarks[k][0], ZONE.landmarks[k][1] - 60];
     REV.value[n].set(p[0], p[1], r); n++;
   }

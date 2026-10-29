@@ -1,0 +1,204 @@
+{
+ "id": "esplanade",
+ "zone": "george-town",
+ "order": 3,
+ "coordinates": [
+  100.34193,
+  5.4222
+ ],
+ "name": {
+  "bm": "Padang Kota Lama & Dewan Bandaraya",
+  "en": "Esplanade & City Hall"
+ },
+ "category": {
+  "bm": "Warisan",
+  "en": "Heritage"
+ },
+ "blurb": {
+  "bm": "Padang hijau di tepi laut, tempat Francis Light mendarat, dengan Dewan Bandaraya di sebelahnya.",
+  "en": "The green field by the sea where Francis Light landed, with City Hall beside it."
+ },
+ "official": null,
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Dewan Bandaraya",
+     "en": "City Hall",
+     "spot": "cityhall",
+     "pts": [
+      [
+       143,
+       89,
+       30
+      ],
+      [
+       70,
+       38,
+       16
+      ],
+      [
+       227,
+       38,
+       16
+      ]
+     ]
+    },
+    {
+     "bm": "Tugu peringatan",
+     "en": "The Cenotaph",
+     "spot": "cenotaph",
+     "pts": [
+      [
+       118,
+       152,
+       18
+      ]
+     ]
+    },
+    {
+     "bm": "Pokok palma",
+     "en": "Palm trees",
+     "spot": "palms",
+     "pts": [
+      [
+       64,
+       139,
+       14
+      ],
+      [
+       161,
+       175,
+       14
+      ],
+      [
+       206,
+       166,
+       14
+      ],
+      [
+       36,
+       121,
+       14
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz sejarah",
+    "en": "History quiz"
+   },
+   "ask": {
+    "bm": "Siapa mendarat di sini pada 17 Julai 1786?",
+    "en": "Who landed here on 17 July 1786?"
+   },
+   "opts": [
+    {
+     "bm": "Francis Light",
+     "en": "Francis Light",
+     "ok": 1
+    },
+    {
+     "bm": "Stamford Raffles",
+     "en": "Stamford Raffles"
+    },
+    {
+     "bm": "James Cook",
+     "en": "James Cook"
+    },
+    {
+     "bm": "Vasco da Gama",
+     "en": "Vasco da Gama"
+    }
+   ],
+   "why": {
+    "bm": "Ya! Francis Light mendarat di sini, kemudian kawasan ini dibersihkan dan Kota Cornwallis dibina di sebelahnya.",
+    "en": "Yes! Francis Light landed here. The area was cleared and Fort Cornwallis was built next to it."
+   }
+  },
+  {
+   "type": "memory",
+   "title": {
+    "bm": "Kad kata",
+    "en": "Word cards"
+   },
+   "pairs": [
+    [
+     "Padang",
+     "Field"
+    ],
+    [
+     "Dewan",
+     "Hall"
+    ],
+    [
+     "Bandar",
+     "City"
+    ],
+    [
+     "Pokok",
+     "Tree"
+    ]
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Padang Kota Lama ialah padang terbuka di tepi laut George Town. Dewan Bandaraya menghadapnya.",
+   "en": "The Esplanade is the open field on George Town's waterfront. City Hall faces it."
+  },
+  "facts": {
+   "bm": [
+    "Francis Light pertama kali mendarat di sini pada 17 Julai 1786.",
+    "Dahulu ia padang kawad tentera, kemudian digunakan untuk sukan sejak pertengahan abad ke-19.",
+    "Dewan Bandaraya siap pada 1903 dan antara bangunan pertama di Pulau Pinang yang dilengkapi lampu dan kipas elektrik.",
+    "Ia dinamakan Dewan Bandaraya pada 1957, apabila George Town menjadi bandar raya."
+   ],
+   "en": [
+    "Francis Light first landed here on 17 July 1786.",
+    "It was a military parade ground, then a sports field from the mid-19th century.",
+    "City Hall was finished in 1903 and was one of Penang's first buildings fitted with electric lights and fans.",
+    "It was named City Hall in 1957, when George Town became a city."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Dewan Bandaraya yang putih",
+    "Tugu peringatan (Cenotaph)",
+    "Kota Cornwallis di hujung padang"
+   ],
+   "en": [
+    "The white City Hall",
+    "The Cenotaph memorial",
+    "Fort Cornwallis at the end of the field"
+   ]
+  },
+  "fun": {
+   "bm": "Padang ini ada Speakers' Corner, yang pertama seumpamanya di Malaysia.",
+   "en": "The field has a Speakers' Corner, the first of its kind in Malaysia."
+  },
+  "src": [
+   [
+    "Wikipedia: Esplanade, Penang",
+    "https://en.wikipedia.org/wiki/Esplanade,_Penang"
+   ],
+   [
+    "Wikipedia: City Hall, George Town",
+    "https://en.wikipedia.org/wiki/City_Hall,_George_Town"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-28",
+ "review": {
+  "owner": "pending"
+ }
+}

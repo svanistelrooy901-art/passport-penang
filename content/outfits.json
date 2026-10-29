@@ -10,15 +10,15 @@
   },
   {
    "id": "samfu",
-   "need": 6
-  },
-  {
-   "id": "kurta",
    "need": 9
   },
   {
+   "id": "kurta",
+   "need": 18
+  },
+  {
    "id": "explorer",
-   "need": 15
+   "need": 27
   }
  ],
  "skins": [

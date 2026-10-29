@@ -1,0 +1,206 @@
+{
+ "id": "kapitan",
+ "zone": "george-town",
+ "order": 8,
+ "coordinates": [
+  100.337389,
+  5.416667
+ ],
+ "name": {
+  "bm": "Masjid Kapitan Keling",
+  "en": "Kapitan Keling Mosque"
+ },
+ "category": {
+  "bm": "Rumah ibadat",
+  "en": "Place of worship"
+ },
+ "blurb": {
+  "bm": "Ini rumah ibadat yang aktif: berpakaian sopan, bercakap perlahan dan hormati orang yang sedang beribadat.",
+  "en": "This is an active place of worship: dress modestly, keep your voice low and respect people at prayer."
+ },
+ "official": null,
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Kubah",
+     "en": "Domes",
+     "spot": "domes",
+     "pts": [
+      [
+       133,
+       76,
+       30
+      ],
+      [
+       69,
+       105,
+       12
+      ],
+      [
+       193,
+       87,
+       12
+      ],
+      [
+       89,
+       69,
+       12
+      ],
+      [
+       172,
+       112,
+       12
+      ]
+     ]
+    },
+    {
+     "bm": "Gerbang",
+     "en": "Arches",
+     "spot": "arches",
+     "pts": [
+      [
+       103,
+       172,
+       14
+      ],
+      [
+       119,
+       169,
+       14
+      ],
+      [
+       144,
+       169,
+       14
+      ]
+     ]
+    },
+    {
+     "bm": "Menara",
+     "en": "Minaret",
+     "spot": "minaret",
+     "pts": [
+      [
+       222,
+       69,
+       16
+      ],
+      [
+       221,
+       21,
+       12
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz nama",
+    "en": "Name quiz"
+   },
+   "ask": {
+    "bm": "Perkataan 'Kapitan' dalam nama masjid ini bermaksud…",
+    "en": "In this mosque's name, 'Kapitan' means…"
+   },
+   "opts": [
+    {
+     "bm": "Ketua masyarakat",
+     "en": "Community leader",
+     "ok": 1
+    },
+    {
+     "bm": "Kapten kapal",
+     "en": "Ship's captain"
+    },
+    {
+     "bm": "Nama sungai",
+     "en": "A river's name"
+    },
+    {
+     "bm": "Nama raja",
+     "en": "A king's name"
+    }
+   ],
+   "why": {
+    "bm": "Betul! Pada 1801, Cauder Mohudeen dilantik sebagai Kapitan, ketua masyarakat India Muslim, dan diberi tanah untuk masjid ini.",
+    "en": "Right! In 1801 Cauder Mohudeen was made Kapitan, leader of the Indian Muslim community, and given land for this mosque."
+   }
+  },
+  {
+   "type": "order",
+   "title": {
+    "bm": "Garis masa",
+    "en": "Timeline"
+   },
+   "items": [
+    {
+     "bm": "1801 · Tanah diberi untuk masjid",
+     "en": "1801 · Land is granted for the mosque"
+    },
+    {
+     "bm": "1930 · Diperbesar, dewan solat jadi dua kali lebih tinggi",
+     "en": "1930 · Enlarged, the prayer hall made twice as tall"
+    },
+    {
+     "bm": "Hari ini · Masih digunakan untuk solat",
+     "en": "Today · Still used for prayers"
+    }
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Masjid Kapitan Keling dibina oleh pedagang India Muslim, di simpang Lebuh Buckingham dan Jalan Masjid Kapitan Keling.",
+   "en": "Kapitan Keling Mosque was built by Indian Muslim traders, on the corner of Buckingham Street and Pitt Street."
+  },
+  "facts": {
+   "bm": [
+    "Pada 1801, Sir George Leith melantik Cauder Mohudeen sebagai Kapitan dan memberi tanah untuk masjid.",
+    "Ia antara institusi Muslim kekal yang pertama di kawasan ini.",
+    "Pada 1930 ia diperbesar: dewan solatnya dijadikan dua kali lebih tinggi, dengan lebih banyak cahaya dan udara.",
+    "Hiasannya ialah corak geometri, bukan gambar manusia atau haiwan."
+   ],
+   "en": [
+    "In 1801 Sir George Leith made Cauder Mohudeen the Kapitan and granted land for the mosque.",
+    "It was one of the first permanent Muslim institutions in the area.",
+    "In 1930 it was enlarged: the prayer hall was made twice as tall, with more light and air.",
+    "Its decoration uses geometric patterns, not pictures of people or animals."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Dinding berwarna kuning oker",
+    "Gerbang ladam kuda di dalam dewan",
+    "Lantai marmar putih"
+   ],
+   "en": [
+    "The ochre-yellow walls",
+    "Horseshoe arches inside the hall",
+    "White marble floors"
+   ]
+  },
+  "fun": {
+   "bm": "Senibinanya menggabungkan gaya Mughal dan Moor.",
+   "en": "Its architecture mixes Mughal and Moorish styles."
+  },
+  "src": [
+   [
+    "Wikipedia: Kapitan Keling Mosque",
+    "https://en.wikipedia.org/wiki/Kapitan_Keling_Mosque"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-28",
+ "review": {
+  "owner": "pending"
+ }
+}

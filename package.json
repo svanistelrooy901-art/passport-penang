@@ -1,7 +1,7 @@
 {
   "name": "pasport-penang",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "description": "Pasport Penang: a 3D explore-and-learn game of Penang for families (BM | EN).",
   "scripts": {
@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:e2e": "node tests/e2e/smoke.mjs",
     "check:content": "vitest run tests/content.test.ts",
-    "bake:zone": "python3 tools/bake_zone.py"
+    "bake:zone": "python3 tools/bake_zone.py",
+    "render:sprites": "node tools/render_sprites.mjs"
   },
   "dependencies": {
     "three": "0.169.0"

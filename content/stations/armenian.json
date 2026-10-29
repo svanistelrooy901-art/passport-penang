@@ -1,0 +1,179 @@
+{
+ "id": "armenian",
+ "zone": "george-town",
+ "order": 9,
+ "coordinates": [
+  100.338111,
+  5.414744
+ ],
+ "name": {
+  "bm": "Lebuh Armenian",
+  "en": "Armenian Street"
+ },
+ "category": {
+  "bm": "Seni jalanan",
+  "en": "Street art"
+ },
+ "blurb": {
+  "bm": "Jalan rumah kedai lama dengan mural, kedai antik dan muzium kecil.",
+  "en": "A street of old shophouses with murals, antique shops and small museums."
+ },
+ "official": null,
+ "partner": null,
+ "games": [
+  {
+   "type": "find",
+   "title": {
+    "bm": "Cari 3 benda",
+    "en": "Find 3 things"
+   },
+   "targets": [
+    {
+     "bm": "Basikal",
+     "en": "Bicycle",
+     "spot": "bicycle",
+     "pts": [
+      [
+       32,
+       141,
+       16
+      ]
+     ]
+    },
+    {
+     "bm": "Beca",
+     "en": "Trishaw",
+     "spot": "trishaw",
+     "pts": [
+      [
+       167,
+       174,
+       20
+      ]
+     ]
+    },
+    {
+     "bm": "Mural",
+     "en": "Mural",
+     "spot": "mural",
+     "pts": [
+      [
+       35,
+       83,
+       30
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "type": "quiz",
+   "title": {
+    "bm": "Kuiz nama",
+    "en": "Name quiz"
+   },
+   "ask": {
+    "bm": "Lebuh ini dinamakan sempena pedagang dari…",
+    "en": "This street is named after traders from…"
+   },
+   "opts": [
+    {
+     "bm": "Armenia",
+     "en": "Armenia",
+     "ok": 1
+    },
+    {
+     "bm": "Arab",
+     "en": "Arabia"
+    },
+    {
+     "bm": "Itali",
+     "en": "Italy"
+    },
+    {
+     "bm": "Jepun",
+     "en": "Japan"
+    }
+   ],
+   "why": {
+    "bm": "Ya! Dahulu ia dipanggil Malay Lane. Menjelang 1808 ia dinamakan Armenian Street kerana pedagang Armenia tinggal di sini.",
+    "en": "Yes! It was once called Malay Lane. By 1808 it was renamed Armenian Street because Armenian traders lived here."
+   }
+  },
+  {
+   "type": "memory",
+   "title": {
+    "bm": "Kad kata",
+    "en": "Word cards"
+   },
+   "pairs": [
+    [
+     "Basikal",
+     "Bicycle"
+    ],
+    [
+     "Lukisan",
+     "Painting"
+    ],
+    [
+     "Jalan",
+     "Street"
+    ],
+    [
+     "Kedai",
+     "Shop"
+    ]
+   ]
+  }
+ ],
+ "kisah": {
+  "intro": {
+   "bm": "Lebuh Armenian ialah antara jalan seni jalanan paling terkenal di George Town.",
+   "en": "Armenian Street is one of George Town's best-known street-art streets."
+  },
+  "facts": {
+   "bm": [
+    "Jalan ini asalnya dipanggil Malay Lane, kemudian dinamakan Armenian Street menjelang 1808.",
+    "Pada 2012, artis Ernest Zacharevic melukis enam mural untuk George Town Festival, termasuk Children on a Bicycle.",
+    "Pada 1910, Sun Yat-sen mengetuai persidangan di sebuah rumah kedai di jalan ini. Kini ia Muzium Sun Yat-sen.",
+    "Muzium Islam Pulau Pinang terletak di hujung barat jalan ini."
+   ],
+   "en": [
+    "It was first called Malay Lane, then renamed Armenian Street by 1808.",
+    "In 2012 the artist Ernest Zacharevic painted six murals for the George Town Festival, including Children on a Bicycle.",
+    "In 1910 Sun Yat-sen chaired a conference in a townhouse on this street. It is now the Sun Yat-sen Museum.",
+    "The Penang Islamic Museum stands at the street's western end."
+   ]
+  },
+  "look": {
+   "bm": [
+    "Mural Children on a Bicycle",
+    "Rumah kedai dengan kedai antik",
+    "Muzium Sun Yat-sen"
+   ],
+   "en": [
+    "The Children on a Bicycle mural",
+    "Shophouses with antique shops",
+    "The Sun Yat-sen Museum"
+   ]
+  },
+  "fun": {
+   "bm": "Zacharevic menggunakan orang tempatan sebagai model untuk mural-muralnya.",
+   "en": "Zacharevic used local people as models for his murals."
+  },
+  "src": [
+   [
+    "Wikipedia: Armenian Street, George Town",
+    "https://en.wikipedia.org/wiki/Armenian_Street,_George_Town"
+   ],
+   [
+    "Wikipedia: Ernest Zacharevic",
+    "https://en.wikipedia.org/wiki/Ernest_Zacharevic"
+   ]
+  ]
+ },
+ "factsChecked": "2026-10-28",
+ "review": {
+  "owner": "pending"
+ }
+}

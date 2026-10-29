@@ -6,7 +6,7 @@ import { save, persist } from './game/save';
 import { flags, player, npcs, keysDown, hooks } from './game/state';
 import { goTo, stepActor, stepKeys, stepNpc } from './game/actors';
 import { renderer, scene, camera, cv, view, camS, ZOOM, MOBILE, updateCamera, resize, loadTex, applyQuality, fitShadow, quality, type QualityName } from './engine/core';
-import { loadGrid, nearestWalkable, CELL } from './engine/pathfinding';
+import { loadGrid, nearestWalkable, walkableAt, CELL } from './engine/pathfinding';
 import { buildWorld, updateWorld, updateLabels, uploadReveal, syncReveal, rebuildPlayer, reveals, revState, landmarkGroups, catMeshes, motion } from './engine/world';
 import { SAT } from './engine/stations';
 import { $, initHud, updateHud, refreshText, toast, act } from './ui/hud';
@@ -138,7 +138,7 @@ async function boot() {
   loadGrid(walk); spawn(); buildWorld(ground!, sea!); applySettings();
   flags.ready = true; renderIntro();
   if (shouldAutoStart()) startPlaying();
-  if (location.hash === '#test') (window as any).__pp = { openStation, save: () => save, camS, player, syncReveal, revState, SAT, MOBILE, quality, calls: () => renderer.info.render.calls, tris: () => renderer.info.render.triangles };
+  if (location.hash === '#test') (window as any).__pp = { openStation, save: () => save, camS, player, syncReveal, revState, SAT, MOBILE, quality, calls: () => renderer.info.render.calls, walkable: walkableAt, zone: ZONE, tris: () => renderer.info.render.triangles };
   requestAnimationFrame(t => { last = t; frame(t); });
 }
 boot().catch(err => { console.error(err); const b = document.getElementById('start'); if (b) b.textContent = 'Ralat memuatkan · Load error'; });
